@@ -1,0 +1,9 @@
+# directory
+dist/
+assets/
+.vscode/
+.vite
+
+# file
+*.json
+.*.json
