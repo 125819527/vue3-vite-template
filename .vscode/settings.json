@@ -1,0 +1,14 @@
+{
+    "prettier.enable": true,
+    "editor.formatOnSave": true,
+    "eslint.validate": [
+      "javascript",
+      "typescript",
+      "javascriptreact",
+      "typescriptreact",
+      "vue",
+      "json",
+      "jsonc",
+      "json5"
+    ]
+}
