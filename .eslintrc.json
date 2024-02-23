@@ -1,0 +1,67 @@
+{
+  "extends": [
+    "wxb-vue3",
+    "vue-global-api",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "globals": {},
+  "rules": {
+    // 去除一行中的末尾多余空格
+    "no-trailing-spaces": [
+      "error",
+      {
+        "skipBlankLines": true
+      }
+    ],
+    // v-model:visible检测
+    "vue/no-v-model-argument": "off",
+    "vue/no-v-for-template-key-on-child": "off",
+    "vue/no-v-for-template-key": "off",
+    "vue/no-v-html": "off" ,
+    // fn () 去除函数调用后的空格
+    "func-call-spacing": [
+      "error",
+      "never"
+    ],
+    "vue/multi-word-component-names": [
+      "error",
+      {
+        "ignores": [
+          "index",
+          "404",
+          "401"
+        ]
+      }
+    ],
+    // 非模板字符串不需要使用反引号
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": false
+      }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": false,
+        "vueIndentScriptAndStyle": false,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "requirePragma": false,
+        "insertPragma": false,
+        "htmlWhitespaceSensitivity": "ignore"
+      },
+      {
+        "usePrettierrc": false
+      }
+    ]
+  }
+}
