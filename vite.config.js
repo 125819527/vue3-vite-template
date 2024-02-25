@@ -4,11 +4,13 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { resolve } from 'path'
+import UnoCSS from 'unocss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    UnoCSS(),
     Components({
       resolvers: [ElementPlusResolver()]
     }),
@@ -23,6 +25,16 @@ export default defineConfig({
     // ↓路径别名
     alias: {
       '@': resolve(__dirname, './src')
+    }
+  },
+  // 引用全局 scss 变量
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+            @import "@/styles/index.scss";
+          `
+      }
     }
   },
   // 本地代理调试
