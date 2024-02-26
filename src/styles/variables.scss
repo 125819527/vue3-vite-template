@@ -1,0 +1,176 @@
+$content-height: calc(100vh - 88px - 36px);
+
+// color
+$primary: #409eff;
+$success: #67c23a;
+$warning: #e6a23c;
+$danger: #f56c6c;
+$info: #909399;
+
+// text
+$primary-text: #292e35;
+$regular-text: #606266;
+$secondary-text: #909399;
+$placeholder-text: #c0c4cc;
+
+// border
+$base-border: #dcdfe6;
+$light-border: #e4e7ed;
+$lighter-border: #ebeef5;
+$extralight-border: #f2f6fc;
+
+// background
+$bg-b: #000000;
+$bg-w: #ffffff;
+$bg-t: transparent;
+
+// font-size
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-xxl: 24px;
+
+// font-family
+$font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+  Microsoft YaHei, Arial, sans-serif;
+
+//sidebar
+$sidebar-width: 212px;
+$main-max-width: 256px;
+$main-bg: #fefefe;
+$menuText: #bfcbd9;
+$menuActiveText: #409eff;
+$subMenuActiveText: #f4f4f5; //https://github.com/ElemeFE/element/issues/12951
+
+$nav-height: 60px;
+$menu-bg: transparent;
+$menu-hover: rgba(58, 116, 242, 0.64);
+
+$subMenuBg: #353e49;
+$submenu-hover: rgba(58, 116, 242, 0.64);
+
+//  -------------------------  全局颜色公共变量S  ---------------------------
+
+//   中性色
+$gray-8: #292e35;
+$gray-7: #4c545c;
+$gray-6: #6b7481;
+$gray-5: #959faa;
+$gray-4: #c5ccd5;
+$gray-3: #e1e6eb;
+$gray-2: #f0f2f7;
+$gray-1: #f8f8fa;
+
+//   中性色
+$white-8: #ffffffff;
+$white-7: #ffffffe0;
+$white-6: #ffffffb8;
+$white-5: #ffffff99;
+$white-4: #ffffff7a;
+$white-3: #ffffff3d;
+$white-2: #ffffff1f;
+$white-1: #ffffff0f;
+
+//   品牌色
+$brand-8: #0035e1;
+$brand-7: #0c5eff;
+$brand-6: #4a87ff;
+$brand-5: #85aeff;
+$brand-4: #b7cfff;
+$brand-3: #d6e4ff;
+$brand-2: #e9f0ff;
+$brand-1: #f6f9ff;
+
+//   功能色
+$success-8: #19814f;
+$success-7: #2d9b62;
+$success-6: #46b578;
+$success-5: #60c48a;
+$success-4: #7ed39e;
+$success-3: #9ee1b6;
+$success-2: #c1f0d0;
+$success-1: #e8ffef;
+
+//   功能色
+$warning-8: #c27500;
+$warning-7: #e08700;
+$warning-6: #ff9e0d;
+$warning-5: #ffaf37;
+$warning-4: #ffbd5a;
+$warning-3: #ffd28d;
+$warning-2: #ffebce;
+$warning-1: #fffaf2;
+
+//  功能色
+$danger-8: #be2b2b;
+$danger-7: #d63f3f;
+$danger-6: #de5b57;
+$danger-5: #e57971;
+$danger-4: #eb968d;
+$danger-3: #f2b4aa;
+$danger-2: #f8d0c8;
+$danger-1: #ffede8;
+
+//  罗兰紫
+$purple-8: #3c108f;
+$purple-7: #551db0;
+$purple-6: #722ed1;
+$purple-5: #8d4eda;
+$purple-4: #a871e3;
+$purple-3: #c396ed;
+$purple-2: #ddbef6;
+$purple-1: #f5e8ff;
+
+//  墨玉绿
+$green-8: #07828b;
+$green-7: #0aa5a8;
+$green-6: #0fc6c2;
+$green-5: #33d1c9;
+$green-4: #5edfd6;
+$green-3: #86e8dd;
+$green-2: #b5f4ea;
+$green-1: #e8fffb;
+
+//  晚秋红
+$vermeil-8: #a23511;
+$vermeil-7: #cc5120;
+$vermeil-6: #f77234;
+$vermeil-5: #f99057;
+$vermeil-4: #faac7b;
+$vermeil-3: #fcc59f;
+$vermeil-2: #fdddc3;
+$vermeil-1: #fff3e8;
+
+//  深海蓝
+$blue-8: #114ba3;
+$blue-7: #206ccf;
+$blue-6: #3491fa;
+$blue-5: #57a9fb;
+$blue-4: #7bc0fc;
+$blue-3: #9fd4fd;
+$blue-2: #c3e7fe;
+$blue-1: #e8f7ff;
+
+//  海棠红
+$magenta-8: #a11069;
+$magenta-7: #cb1e83;
+$magenta-6: #f5319d;
+$magenta-5: #f754a8;
+$magenta-4: #f979b7;
+$magenta-3: #fb9dc7;
+$magenta-2: #fdc2db;
+$magenta-1: #ffe8f1;
+
+//  深桔黄
+$yellow-8: #a26d0a;
+$yellow-7: #cc9213;
+$yellow-6: #f7ba1e;
+$yellow-5: #f9cc45;
+$yellow-4: #fadc6d;
+$yellow-3: #fce996;
+$yellow-2: #fdf4bf;
+$yellow-1: #fffce8;
+
+//  -------------------------  全局颜色公共变量E  ---------------------------
