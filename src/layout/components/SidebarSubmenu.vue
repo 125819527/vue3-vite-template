@@ -1,9 +1,7 @@
 <script setup>
 import { defineProps } from 'vue'
 import SidebarMenuItem from './SidebarMenuItem.vue'
-// import { userStore } from '@/store/navUser'
-// const store = userStore()
-
+ 
 const props = defineProps({
   item: {
     type: Object,
@@ -17,11 +15,11 @@ const props = defineProps({
  */
 const getChild = (item) => {
   let childArr = []
-  console.log(item.children)
+
   for (let index in item.children) {
     childArr.push(item.children[index])
   }
-  console.log(childArr, 'childArr==')
+
   return childArr
 }
 
@@ -55,7 +53,7 @@ const onlyOneChild = (item) => {
       <el-sub-menu :index="item.name">
         <template #title>
           <el-icon class="menu-icon">
-            <component :is="(item.meta.icon)"></component>
+            <component :is="item.meta.icon"></component>
           </el-icon>
 
           <span class="menu-text">{{ item.meta?.title }}</span>

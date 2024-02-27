@@ -65,7 +65,12 @@ export const routes = [
   {
     path: '/user',
     name: 'user',
+
     component: () => import('@/layout/index.vue'),
+    meta: {
+      title: '个人中心',
+      icon: 'User'
+    },
     children: [
       {
         path: '/user/index',
@@ -97,8 +102,8 @@ export const roleRoutes = [
     children: [
       {
         path: '/roles/index',
-        name: 'user',
-        component: () => import('@/views/index/index.vue'),
+        name: 'roles',
+        component: () => import('@/views/roles/index.vue'),
         meta: {
           title: '用户管理',
           icon: 'User'
