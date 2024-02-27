@@ -88,13 +88,17 @@ export const routes = [
 export const roleRoutes = [
   {
     path: '/roles',
-    name: 'roles',
     component: () => import('@/layout/index.vue'),
+    meta: {
+      title: '用户管理',
+      icon: 'User'
+    },
+    redirect: '/roles/index',
     children: [
       {
         path: '/roles/index',
         name: 'user',
-        component: () => import('@/views/roles/index.vue'),
+        component: () => import('@/views/index/index.vue'),
         meta: {
           title: '用户管理',
           icon: 'User'

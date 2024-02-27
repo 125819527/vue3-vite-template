@@ -16,7 +16,7 @@ export const menuStore = defineStore({
     addMenuList(info) {
       this.menuList = [...this.menuList, ...roleRoutes]
     },
-    initMenuList() {
+    clearMenuList() {
       this.menuList = deepClone(routes) || []
     }
   }

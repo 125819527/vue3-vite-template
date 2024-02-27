@@ -55,7 +55,7 @@ const logout = async () => {
     type: 'success',
     duration: 2000
   })
-  menu.initMenuList()
+  menu.clearMenuList()
   localStorage.clear()
   router.push('/login')
 }

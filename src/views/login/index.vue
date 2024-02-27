@@ -41,11 +41,31 @@ const onLogin = async (formEl) => {
       //     }
       //   });
       // TODO 权限控制
+
       store.addMenuList()
+      router.addRoute({
+        path: '/roles',
+        component: () => import('@/layout/index.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'User'
+        },
+        redirect: '/roles/index',
+        children: [
+          {
+            path: '/roles/index',
+            name: 'user',
+            component: () => import('@/views/roles/index.vue'),
+            meta: {
+              title: '用户管理',
+              icon: 'User'
+            }
+          }
+        ]
+      })
+
       // 存入菜单到本地
-
       localStorage.setItem('menu', JSON.stringify(store.getMenuList))
-
       router.push('/home/index')
     } else {
       loading.value = false

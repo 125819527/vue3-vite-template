@@ -1,28 +1,20 @@
 import { defineStore } from 'pinia'
-export const resStore = defineStore({
-  id: 'resouce', // id必填，且需要唯一
+export const userStore = defineStore({
+  id: 'user', // id必填，且需要唯一
   state: () => {
     return {
-      // 搜索
-      form: {
-        page: 1,
-        size: 10,
-        hasValid: '',
-        status: '',
-        saleId: '',
-        fromDate: '',
-        toDate: '',
-        sort: '',
-        visitGroup: ''
-      }
+      userInfo: {}
     }
   },
   getters: {
-    getForm: (state) => state.form
+    getInfo: (state) => state.userInfo
   },
   actions: {
-    saveData(info) {
-      this.form = { ...this.form, ...info }
+    saveInfo(info) {
+      this.userInfo = info
+    },
+    clearInfo() {
+      this.userInfo = {}
     }
   }
 })
