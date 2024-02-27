@@ -14,9 +14,7 @@ const loading = ref(false)
 const ruleFormRef = ref()
 
 const isDay = ref(true)
-const dataThemeChange = () => {
-  console.log(1111)
-}
+const dataThemeChange = () => {}
 
 const ruleForm = reactive({
   username: 'admin',
