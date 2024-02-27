@@ -1,3 +1,5 @@
-<template>111</template>
+<template><div>
+    <h1>huany</h1>
+</div></template>
 <script setup></script>
 <style lang="scss" scoped></style>

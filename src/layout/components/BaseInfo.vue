@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import router from '@/router'
-import { ElMessage as Message } from 'element-plus'
-import { getUserInfoApi, changeTenantApi } from '@/api/nav'
-// import { userStore } from '@/store/navUser'
+import { ElMessage } from 'element-plus'
+import { ref, onMounted, defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { menuStore } from '@/store/menu'
 // 从菠萝中拿用户信息
 // const store = userStore()
 // const {
@@ -14,20 +14,17 @@ import { getUserInfoApi, changeTenantApi } from '@/api/nav'
 //   savePlatformApp,
 //   saveCustomized
 // } = store
-// 跳转路由列表
-const routerList = {
-  0: '/cockpit/index', // 帐号
-  1: '/customer/customer-profile', // 租户
-  power: '/user-permission/index' // 无权限
-}
-const dialog = ref({
-  isShow: false,
-  title: '切换租户'
-})
-
+const menu = menuStore()
+const router = useRouter()
 onMounted(async () => {
   getUser()
 })
+const dialog = ref({
+  isShow: false,
+  title: '我的余额'
+})
+
+const visible = ref(false)
 const getUser = async () => {
   // const { data } = await getUserInfoApi()
   // if (!data) {
@@ -52,54 +49,65 @@ const getUser = async () => {
 }
 
 // 退出登录
-const logout = async () => {}
+const logout = async () => {
+  ElMessage({
+    message: '退出成功',
+    type: 'success',
+    duration: 2000
+  })
+  menu.initMenuList()
+  localStorage.clear()
+  router.push('/login')
+}
 
 // 关闭弹窗
 const onClose = () => {
   dialog.value.isShow = false
 }
+
+const openDialog = () => {
+  dialog.value.isShow = true
+  visible.value = false
+}
 </script>
 
 <template>
   <div class="base-info">
-    <el-popover
-      placement="bottom-end"
-      width="310"
-      trigger="click"
-      :show-arrow="false"
-      :teleported="false"
-    >
+    <el-popover placement="bottom-start" width="210" :visible="visible">
       <template #reference>
-        <div class="head-img flex-row right-menu-item">
+        <div
+          class="head-img flex-row right-menu-item"
+          @click="visible = !visible"
+        >
           <el-avatar
-            v-if="store.userInfo.avatar"
-            :size="32"
-            :src="store.userInfo.avatar.url"
+            :size="44"
+            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
           />
-          <el-avatar v-else :size="32" :src="store.userInfo.avatar" />
         </div>
       </template>
 
       <div class="user-popover">
-        <div class="header f-x">
+        <div class="header flex-ac">
           <div class="left">
             <div class="name">
               <el-avatar
-                v-if="store.userInfo.avatar"
+                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                 :size="44"
-                :src="store.userInfo.avatar.url"
               />
-              <el-avatar v-else :size="44" :src="store.userInfo.avatar" />
             </div>
           </div>
           <div class="right">
-            <div class="top f-x">
-              <div class="name">{{ store.userInfo.name }}</div>
+            <div class="top flex-ac">
+              <div class="name">小米</div>
             </div>
           </div>
         </div>
         <div class="list">
           <ul>
+            <li cursor-pointer @click="openDialog">
+              <el-icon><Money /></el-icon>
+              <span class="title">我的余额</span>
+            </li>
             <li cursor-pointer @click="logout">
               <el-icon><SwitchButton /></el-icon>
               <span class="title">退出登陆</span>
@@ -116,21 +124,18 @@ const onClose = () => {
     class="top-dialog"
     @close="onClose"
   >
-    <template v-for="item in store.tenantList" :key="item.id">
-      <div :class="'f-x item item-' + item.status" @click="changeTenant(item)">
-        <div class="f-x">
-          <div class="icon">
-            <svg-icon :font-class="getStatus(item).icon" />
+    <div>
+      <div class="flex-ac item">
+        <div class="-flex-row-flex-start-center">
+          <div class="-flex-row-center-center">
+            <el-icon color="black"><Money /></el-icon>
           </div>
-          <div class="name">{{ item.showName || item.name }}</div>
+          <div class="title">我的余额：</div>
         </div>
-        <div>
-          <span :class="getStatus(item).style">
-            {{ getStatus(item).title }}
-          </span>
-        </div>
+
+        <div class="num">133元</div>
       </div>
-    </template>
+    </div>
   </el-dialog>
 </template>
 
@@ -151,7 +156,7 @@ ul {
   align-items: center;
 }
 
-.f-x {
+.flex-ac {
   @include flex;
 }
 
@@ -268,70 +273,14 @@ ul {
     padding: 12px;
     box-sizing: border-box;
 
-    .name {
+    .title,
+    .num {
       color: #292e35ff;
       font-size: 14px;
       font-weight: 500;
       font-family: 'PingFang SC';
       padding-left: 8px;
     }
-
-    span {
-      display: block;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .status-1 {
-      width: 48px;
-      height: 24px;
-      line-height: 24px;
-      border-radius: 4px;
-      background: #0c5effff;
-      color: #ffffffff;
-    }
-
-    .status-11 {
-      width: 60px;
-      height: 20px;
-      line-height: 20px;
-      border-radius: 2px;
-      background: #e9f0ffff;
-      color: #0035e1ff;
-    }
   }
-
-  .item-1 {
-    &:hover {
-      border: 1px solid #0c5eff;
-    }
-  }
-
-  .item-0 {
-    border: none;
-    background: #f8f8faff;
-  }
-}
-
-.status-0 {
-  width: 36px;
-  height: 20px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 20px;
-  border-radius: 2px;
-  background: #ffede8ff;
-  color: #be2b2bff;
-}
-
-.head-img {
-  cursor: pointer;
-}
-
-.tenant-img {
-  width: 14px;
-  height: 14px;
 }
 </style>

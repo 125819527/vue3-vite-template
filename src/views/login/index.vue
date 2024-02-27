@@ -2,13 +2,13 @@
 import Motion from './utils/motion'
 import { useRouter } from 'vue-router'
 import { loginRules } from './utils/rule'
-import { bg, illustration } from './utils/static'
+import { bg, illustration, traveling } from './utils/static'
 
 import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from 'vue'
 
-defineOptions({
-  name: 'Login'
-})
+import { menuStore } from '@/store/menu'
+
+const store = menuStore()
 const router = useRouter()
 const loading = ref(false)
 const ruleFormRef = ref()
@@ -25,6 +25,7 @@ const ruleForm = reactive({
 
 const onLogin = async (formEl) => {
   loading.value = true
+
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
@@ -39,6 +40,12 @@ const onLogin = async (formEl) => {
       //       });
       //     }
       //   });
+      // TODO 权限控制
+      store.addMenuList()
+      // 存入菜单到本地
+
+      localStorage.setItem('menu', JSON.stringify(store.getMenuList))
+
       router.push('/home/index')
     } else {
       loading.value = false
@@ -66,7 +73,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="select-none" :style="{ background: isDay ? 'white' : 'black' }">
     <img :src="bg" class="wave" />
-    <div class="flex-c absolute right-5 top-3">
+    <div class="switch absolute right-5 top-3" z-100>
       <!-- 主题 -->
       <el-switch
         v-model="isDay"
@@ -78,11 +85,11 @@ onBeforeUnmount(() => {
     </div>
     <div class="login-container">
       <div class="img-left">
-        <img :src="illustration" alt="illustration" />
+        <img :src="isDay ? traveling : illustration" alt="illustration" />
       </div>
-      <div class="login-box">
+      <div class="login-box" z-99 relative>
         <div class="login-form">
-          <img src="@/assets/logo.png" w-20 h-20 mb-5 />
+          <img src="@/assets/logo.png" w-15 h-15 mb-5 />
 
           <el-form
             ref="ruleFormRef"

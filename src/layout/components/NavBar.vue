@@ -18,12 +18,12 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex-row wxb-navbar">
+  <div class="flex-row navbar">
     <div class="flex-row">
       <div class="flex-row-center header-menu">
         <div class="flex-row sidebar-logo-link">
           <template>
-            <img class="nav-logo" src="@/static/avator.png" />
+            <img class="nav-logo" src="@/assets/avator.png" />
             <span class="title">旅游信息管理网</span>
           </template>
         </div>
@@ -95,18 +95,18 @@ div:focus {
   color: #3a74f2;
 }
 
-.wxb-navbar {
-  position: fixed;
+.navbar {
+  display: flex;
+  position: relative;
   top: 0;
-  left: 0;
+  right: 0;
   z-index: 2000;
   color: #353e49;
-  width: 100%;
+  background: red;
   height: 56px;
-  border: 0 solid #979797ff;
-  background: #fffffff2;
-  box-shadow: 0 2px 2px -1px #1b242c0a, 0 2px 8px -1px #1b242c14;
-  // overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 2px -1px rgba(27, 36, 44, 0.1),
+    0 2px 8px -1px rgba(27, 36, 44, 0);
   justify-content: space-between;
   box-sizing: border-box;
   padding: 0 32px;

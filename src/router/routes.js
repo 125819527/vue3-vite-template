@@ -84,3 +84,22 @@ export const routes = [
     component: () => import('@/views/login/index.vue')
   }
 ]
+
+export const roleRoutes = [
+  {
+    path: '/roles',
+    name: 'roles',
+    component: () => import('@/layout/index.vue'),
+    children: [
+      {
+        path: '/roles/index',
+        name: 'user',
+        component: () => import('@/views/roles/index.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'User'
+        }
+      }
+    ]
+  }
+]

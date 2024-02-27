@@ -6,7 +6,7 @@ const locale = zhCn
 
 <template>
   <el-config-provider :locale="locale">
-    <div style="width: 100%; overflow-y: hidden">
+    <div style="width: 100%; overflow-y: hidden ;height: 100vh;">
       <router-view />
     </div>
   </el-config-provider>

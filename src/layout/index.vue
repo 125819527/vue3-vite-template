@@ -1,60 +1,40 @@
 <template>
-  <div class="home">
-    <HelloWorld></HelloWorld>
-    <main style="display: flex">
-      <!-- 侧边 -->
-      <!-- <el-menu
-        :default-active="route"
-        class="el-menu-vertical-demo menu"
-        router
-        background-color="rgb(69 165 79)"
-        :default-openeds="[]"
-        text-color="rgb(255 255 255)"
-        active-text-color="#d7efe0"
-      >
-        <el-sub-menu
-          :index="index + ''"
-          v-for="(item, index) in menuList"
-          :key="index"
-        >
-          <template #title>
-            <i :class="item.icon"></i>
-            <span>{{ item.title }}</span>
-          </template>
-          <el-menu-item-group v-for="(el, i) in item.children" :key="i">
-            <el-menu-item :index="el.url">{{ el.title }}</el-menu-item>
-          </el-menu-item-group>
-        </el-sub-menu>
-      </el-menu> -->
+  <div flex-col h-full class="div" @scroll="handleScroll">
+    <div>
       <sidebar-menu :router-list="routerList" />
-      <div class="routemain">
-        <router-view></router-view>
-      </div>
-      <!-- main -->
-    </main>
+    </div>
+    <div class="routemain">
+      <router-view></router-view>
+    </div>
+    <!-- main -->
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed, getCurrentInstance } from 'vue'
-import HelloWorld from '@/components/HelloWorld.vue'
-import SidebarMenu from '@/layout/components/SidebarMenu.vue'
-import { routes } from '@/router/routes'
-const routerList = ref(routes)
+import { onMounted } from 'vue'
 
-onMounted(async () => {})
+import SidebarMenu from '@/layout/components/SidebarMenu.vue'
+import { menuStore } from '@/store/menu'
+
+const store = menuStore()
+const routerList = ref([])
+
+onMounted(async () => {
+  if (localStorage.getItem('menu')) {
+    routerList.value = JSON.parse(localStorage.getItem('menu'))
+  } else {
+    routerList.value = store.getMenuList
+    // 存入菜单到本地
+    localStorage.setItem('menu', JSON.stringify(store.getMenuList))
+  }
+})
+
+const handleScroll = (e) => {
+  console.log(e, 'scroll')
+}
 </script>
 <style lang="scss" scoped>
-.home {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  main {
-    .routemain {
-      flex: 1;
-      width: 80%;
-      padding: 20px;
-    }
-  }
+.div {
+  width: 100vw;
 }
 </style>
