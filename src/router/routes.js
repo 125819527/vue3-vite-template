@@ -12,26 +12,29 @@ export const routes = [
           title: '网站首页',
           icon: 'Sunrise'
         }
+      },
+      {
+        path: '/hotelDetail',
+        name: 'hotel-detail',
+        component: () => import('@/views/index/hotelDetail.vue'),
+        meta: {
+          title: '酒店详情',
+          hidden: true
+        }
+      },
+      {
+        path: '/scenicDetail',
+        name: 'scenic-detail',
+        component: () => import('@/views/index/scenicDetail.vue'),
+        meta: {
+          title: '景点详情',
+          hidden: true
+        }
       }
     ],
     redirect: '/home/index'
   },
-  {
-    path: '/hotelDetail',
-    name: 'hotel-detail',
-    component: () => import('@/views/index/hotelDetail.vue'),
-    meta: {
-      title: '酒店详情'
-    }
-  },
-  {
-    path: '/scenicDetail',
-    name: 'scenic-detail',
-    component: () => import('@/views/index/scenicDetail.vue'),
-    meta: {
-      title: '景点详情'
-    }
-  },
+
   {
     path: '/order-list',
     name: 'order-list',

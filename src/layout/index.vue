@@ -1,7 +1,6 @@
 <template>
   <div flex-col h-full class="div"  >
     <sidebar-menu :router-list="routerList" :op="op" />
-
     <div class="routemain" mt-24 >
       <router-view></router-view>
     </div>
@@ -11,7 +10,6 @@
 
 <script setup>
 import { onMounted } from 'vue'
-
 import SidebarMenu from '@/layout/components/SidebarMenu.vue'
 import { menuStore } from '@/store/menu'
 

@@ -17,7 +17,10 @@ const getChild = (item) => {
   let childArr = []
 
   for (let index in item.children) {
-    childArr.push(item.children[index])
+    if(!item.children[index].meta?.hidden){
+      childArr.push(item.children[index])
+    }
+    
   }
 
   return childArr
@@ -53,7 +56,7 @@ const onlyOneChild = (item) => {
       <el-sub-menu :index="item.name">
         <template #title>
           <el-icon class="menu-icon">
-            <component :is="item.meta.icon"></component>
+            <component :is="item?.meta?.icon"></component>
           </el-icon>
 
           <span class="menu-text">{{ item.meta?.title }}</span>

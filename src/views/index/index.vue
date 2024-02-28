@@ -59,7 +59,12 @@
                 <el-tag type="danger">活动优惠</el-tag>
               </p>
               <div class="bottom">
-                <el-button class="button" type="primary" plain>
+                <el-button
+                  class="button"
+                  type="primary"
+                  plain
+                  @click="goDetail"
+                >
                   查看详情
                 </el-button>
               </div>
@@ -107,7 +112,12 @@
                 <el-tag type="danger">活动优惠</el-tag>
               </p>
               <div class="bottom">
-                <el-button class="button" type="primary" plain>
+                <el-button
+                  class="button"
+                  type="primary"
+                  plain
+                  @click="goDetail"
+                >
                   查看详情
                 </el-button>
               </div>
@@ -125,6 +135,8 @@
   </div>
 </template>
 <script setup>
+import router from '@/router'
+
 const searchVal = ref('')
 const activeName = ref('first')
 const card = ref({
@@ -137,6 +149,10 @@ const search = () => {
     message: '更新成功，列表已更新',
     type: 'success'
   })
+}
+
+const goDetail = () => {
+  router.push({ path: '/scenicDetail', query: { id: '11111' } })
 }
 </script>
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { loginRules } from './utils/rule'
 import { bg, illustration, traveling } from './utils/static'
 
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 
 import { menuStore } from '@/store/menu'
 
@@ -43,6 +43,7 @@ const onLogin = async (formEl) => {
       store.addMenuList()
       router.addRoute({
         path: '/roles',
+        name: 'roles',
         component: () => import('@/layout/index.vue'),
         meta: {
           title: '用户管理',
@@ -52,11 +53,11 @@ const onLogin = async (formEl) => {
         children: [
           {
             path: '/roles/index',
-            name: 'user',
+            name: 'roles',
             component: () => import('@/views/roles/index.vue'),
             meta: {
               title: '用户管理',
-              icon: 'User'
+              icon: 'Setting '
             }
           }
         ]
