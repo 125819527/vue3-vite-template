@@ -11,6 +11,10 @@ defineProps({
     default: () => {
       return []
     }
+  },
+  op: {
+    type: Number,
+    default: 1
   }
 })
 const router = useRouter()
@@ -22,7 +26,7 @@ const defaultActive = computed(() => {
 </script>
 
 <template>
-  <div class="-flex" flex>
+  <div class="-flex nav-fixed" flex :style="{ opacity: op }" bg-white op-100>
     <div class="logo -flex-row-center-center" pr-5 w-70 h-14>
       <img src="@/assets/logo.png" width="35px" height="35px" ml-2 mr-2 />
       <h3 style="color: #3e75dc">旅游信息管理网</h3>
@@ -47,6 +51,14 @@ const defaultActive = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  transition: all 0.5s;
+}
+
 .menu {
   height: 57px;
   box-shadow: 0 2px 2px -1px rgba(27, 36, 44, 0.1),

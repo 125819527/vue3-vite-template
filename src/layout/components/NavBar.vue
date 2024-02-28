@@ -102,9 +102,9 @@ div:focus {
   right: 0;
   z-index: 2000;
   color: #353e49;
-  background: red;
+  background: rgb(255, 255, 255);
   height: 56px;
-  background: rgba(255, 255, 255, 0.95);
+
   box-shadow: 0 2px 2px -1px rgba(27, 36, 44, 0.1),
     0 2px 8px -1px rgba(27, 36, 44, 0);
   justify-content: space-between;

@@ -1,0 +1,22 @@
+//  超出一行省略
+.-text-ellipsis {
+    white-space: pre-line;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    lines: 1;
+  }
+  //  超出多行省略 默认3行
+  .-text-more-ellipsis {
+    white-space: pre-line;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    lines: 3;
+  }
