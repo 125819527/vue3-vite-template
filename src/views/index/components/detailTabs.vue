@@ -41,7 +41,4 @@ const activeName = ref('0')
     font-size: 20px;
   }
 }
-.other {
-  background-color: #f6f8fa;
-}
 </style>
