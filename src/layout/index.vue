@@ -1,10 +1,15 @@
 <template>
-  <div flex-col h-full class="div"  >
+  <div flex-col h-full class="div">
     <sidebar-menu :router-list="routerList" :op="op" />
-    <div class="routemain" mt-24 >
+    <!-- main -->
+    <div class="routemain" mt-24>
       <router-view></router-view>
     </div>
-    <!-- main -->
+    <footer>
+      <p>版权所有</p>
+      <p>联系电话：020-88888888 联系邮箱：1234567@163.com</p>
+      <p>©2024-2024旅游信息管理网</p>
+    </footer>
   </div>
 </template>
 
@@ -42,5 +47,18 @@ const handleScroll = (e) => {
 <style lang="scss" scoped>
 .div {
   width: 100vw;
+}
+footer {
+  background-color: #f6f8fa;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  p {
+    margin: 5px 0;
+  }
 }
 </style>

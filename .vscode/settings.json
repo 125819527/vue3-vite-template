@@ -1,14 +1,34 @@
+ 
 {
-    "prettier.enable": true,
-    "editor.formatOnSave": true,
-    "eslint.validate": [
-      "javascript",
-      "typescript",
-      "javascriptreact",
-      "typescriptreact",
-      "vue",
-      "json",
-      "jsonc",
-      "json5"
-    ]
+  "prettier.enable": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue",
+    "json",
+    "jsonc",
+    "json5"
+  ],
+  "cSpell.words": [
+    "composables",
+    "Pinia",
+    "unocss",
+    "unplugin",
+ 
+  ],
+  // prettier 不影响 js
+  "prettier.disableLanguages": [
+    "javascript",
+    "javascriptreact",
+     
+  ],
+  "vue.codeActions.enabled": false,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "aiXcoder.showTrayIcon": true,
+  "editor.tabCompletion": "on",
+  "diffEditor.codeLens": true
 }

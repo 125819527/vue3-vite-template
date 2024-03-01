@@ -93,6 +93,8 @@
             <img
               src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
               class="image"
+              width="210"
+              height="118"
             />
             <div style="padding: 14px">
               <span class="-text-more-ellipsis">
