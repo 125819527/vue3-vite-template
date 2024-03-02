@@ -20,3 +20,14 @@
     -webkit-line-clamp: 3;
     lines: 3;
   }
+
+  .-text-6-ellipsis {
+    white-space: pre-line;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    lines: 6;
+  }

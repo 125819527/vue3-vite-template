@@ -1,6 +1,6 @@
 <template>
   <div flex>
-    <el-card shadow="hover" v-for="index in 5" :key="index">
+    <el-card shadow="hover" v-for="index in 5" :key="index" @click="goHotel">
       <img
         src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
         class="image"
@@ -30,7 +30,13 @@
     </el-card>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import router from '@/router'
+const goHotel = () => {
+  console.log('goHotel')
+  router.push({ path: '/hotelDetail', query: { id: '11111' } })
+}
+</script>
 
 <style scoped lang="scss">
 :deep {
