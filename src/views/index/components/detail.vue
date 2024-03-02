@@ -131,11 +131,18 @@
       </div>
     </div>
     <div class="right" w-125 h-full pt-4>
-      <el-calendar w-full>
+      <el-calendar w-full :range="[new Date(), endDdate]">
         <template #date-cell="{ data }">
           <p :class="data.isSelected ? 'is-selected' : ''">
             {{ data.day.split('-').slice(1).join('-') }}
-            {{ data.isSelected ? '✔️' : '' }}
+          </p>
+          <p
+            v-if="new Date(data.day) > new Date()"
+            font-size-3
+            color="#3a84ee"
+            font-500
+          >
+            {{ 300 + Number(data.day.split('-').slice(2).join('')) }}起
           </p>
         </template>
       </el-calendar>
@@ -158,11 +165,24 @@
   </el-dialog>
 </template>
 <script setup>
+const dialogVisible = ref(false)
 const openMore = () => {
   console.log('openMore')
   dialogVisible.value = true
 }
-const dialogVisible = ref(false)
+
+const endDdate = ref(null)
+
+onMounted(() => {
+  let currentDate = new Date()
+
+  // 增加两个月份（注意：getMonth()返回的是0-11的数字，因此需要加2再减去1）
+  currentDate.setMonth(currentDate.getMonth() + 2)
+
+  endDdate.value = currentDate
+
+  console.log(endDdate.value, new Date())
+})
 </script>
 <style lang="scss" scoped>
 :deep {
