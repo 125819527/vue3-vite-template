@@ -17,7 +17,9 @@
             4.9
             <span font-size-4 font-400>分</span>
           </p>
+
           <p font-size-4 color="#3a84ee" mr-3 class="score">1231313评分</p>
+
           <p font-size-4 color="#666666" mr-3>13413413人出游</p>
         </div>
         <div class="-flex-row-flex-start-center">
@@ -59,12 +61,16 @@
               h-full
               pb-1
             />
+
             <img
               src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
               class="image"
               w-full
               h-full
             />
+            <div class="last-hover -flex-row-center-center" @click="openMore">
+              <span color="#fff" font-size-3>查看更多图片</span>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -105,7 +111,7 @@
             四川中国空军哈佛i啊饿后i
           </div>
         </div>
-        <div mb-1 class="-flex-row-flex-start-flex-start">
+        <div mb-1 class="-flex-row-flex-start-flex-start" id="comments">
           <p font-size-3 color="gray" w-17>产品卖点</p>
 
           <p w-full font-size-3.5>
@@ -135,9 +141,38 @@
       </el-calendar>
     </div>
   </div>
+
+  <el-dialog v-model="dialogVisible" title="全部图片" width="60%">
+    <div class="swiper" w-full p-5>
+      <el-carousel :interval="3000" height="400px" arrow="always">
+        <el-carousel-item v-for="index in 6" :key="index">
+          <img
+            src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
+            class="image"
+            w-full
+            h-full
+          />
+        </el-carousel-item>
+      </el-carousel>
+    </div>
+  </el-dialog>
 </template>
-<script setup></script>
+<script setup>
+const openMore = () => {
+  console.log('openMore')
+  dialogVisible.value = true
+}
+const dialogVisible = ref(false)
+</script>
 <style lang="scss" scoped>
+:deep {
+  .el-carousel__arrow {
+    font-size: 30px;
+    color: #475669;
+    font-weight: 500;
+    background-color: transparent;
+  }
+}
 div {
   box-sizing: border-box;
 }
@@ -155,5 +190,35 @@ div {
     text-decoration: underline;
     cursor: pointer;
   }
+}
+.last-hover {
+  position: absolute;
+  width: 25%;
+  height: 49%;
+  top: 51%;
+  background-color: #00000054;
+
+  text-align: center;
+}
+.last-hover:hover {
+  cursor: pointer;
+  background-color: #00000074;
+}
+
+// todo
+.el-carousel__item h3 {
+  color: #475669;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0;
+  text-align: center;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
 }
 </style>

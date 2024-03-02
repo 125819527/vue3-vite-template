@@ -1,7 +1,7 @@
 <template>
   <div class="other" w-full p-5>
-    <div v-for="index in 2" :key="index">
-      <h4>费用</h4>
+    <div>
+      <h3>费用</h3>
       <el-alert
         title="为成人/儿童有差异的项目，请特别留意"
         type="warning"
@@ -15,9 +15,26 @@
         :highlight-current-row="false"
         :header-cell-style="{ backgroundColor: '#f6f8fa' }"
       >
-        <el-table-column prop="date" label="Date" width="240" />
-        <el-table-column prop="name" label="Name" width="480" />
-        <el-table-column prop="address" label="Address" />
+        <el-table-column prop="date" label="类型" width="240" />
+        <el-table-column prop="name" label="成人【12周岁及以上】" width="480" />
+        <el-table-column prop="address" label="儿童【2-12周岁(不含)】" />
+      </el-table>
+    </div>
+    <div>
+      <h3>自理费用</h3>
+
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+        :highlight-current-row="false"
+        :header-cell-style="{ backgroundColor: '#f6f8fa' }"
+      >
+        <el-table-column prop="date" label="住宿" width="240" />
+        <el-table-column
+          prop="name"
+          label="儿童不含景交、门票和住宿费用敬请自理"
+        />
       </el-table>
     </div>
   </div>

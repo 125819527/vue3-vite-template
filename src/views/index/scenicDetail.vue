@@ -47,6 +47,4 @@ div {
     cursor: pointer;
   }
 }
-
-
 </style>

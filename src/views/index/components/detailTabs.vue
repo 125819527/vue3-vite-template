@@ -6,7 +6,7 @@
     w-full
   >
     <el-tab-pane label="产品详情" name="0">
-      <div class="other" w-full p-5>
+      <div class="detail" w-full p-5>
         <h2>产品详情</h2>
         <img
           src="https://dimg04.c-ctrip.com/images/0303p120003qjefmg966C.jpg"
@@ -40,5 +40,8 @@ const activeName = ref('0')
   .el-tabs__item {
     font-size: 20px;
   }
+}
+.detail {
+  background-color: #f6f8fa;
 }
 </style>
