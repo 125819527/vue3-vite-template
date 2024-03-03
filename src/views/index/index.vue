@@ -34,7 +34,7 @@
         />
         <p font-size-5 font-500 ml-2>欢乐周边游</p>
       </div>
-      <el-tabs v-model="activeName" class="list-tabs" @tab-click="handleClick">
+      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick">
         <el-tab-pane label="User" name="first">
           <el-card shadow="hover" v-for="index in 8" :key="index">
             <img
@@ -87,7 +87,7 @@
         />
         <p font-size-5 font-500 ml-2>推荐境外游</p>
       </div>
-      <el-tabs v-model="activeName" class="list-tabs" @tab-click="handleClick">
+      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick">
         <el-tab-pane label="User" name="first">
           <el-card shadow="hover" v-for="index in 10" :key="index">
             <img

@@ -27,7 +27,7 @@ const defaultActive = computed(() => {
 
 <template>
   <div class="-flex nav-fixed" flex :style="{ opacity: op }" bg-white op-100>
-    <div class="logo -flex-row-center-center" pr-5 w-70 h-14>
+    <div class="logo -flex-row-center-center" pr-5 w-90 h-14>
       <img src="@/assets/logo.png" width="35px" height="35px" ml-2 mr-2 />
       <h3 style="color: #3e75dc">智慧旅游信息管理网</h3>
     </div>
