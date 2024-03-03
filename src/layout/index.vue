@@ -2,7 +2,7 @@
   <div flex-col h-full class="div">
     <sidebar-menu :router-list="routerList" :op="op" />
     <!-- main -->
-    <div class="routemain" mt-24>
+    <div class="routemain" mt-24 mb-24>
       <router-view></router-view>
     </div>
     <footer>
@@ -51,7 +51,8 @@ const handleScroll = (e) => {
 footer {
   background-color: #f6f8fa;
   width: 100%;
-
+  position: fixed;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
