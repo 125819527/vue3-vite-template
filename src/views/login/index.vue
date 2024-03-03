@@ -1,34 +1,32 @@
 <script setup>
 import Motion from './utils/motion'
 import { useRouter } from 'vue-router'
-import { loginRules } from './utils/rule'
+import { loginRules, registerRules } from './utils/rule'
 import { bg, illustration, traveling } from './utils/static'
-
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
-
+import { ref, reactive } from 'vue'
 import { menuStore } from '@/store/menu'
+import { ElMessage } from 'element-plus'
 
 const store = menuStore()
 const router = useRouter()
 const loading = ref(false)
-const ruleFormRef = ref()
-
 const isDay = ref(true)
-const dataThemeChange = () => {}
 
-const ruleForm = reactive({
-  username: 'admin',
-  password: 'admin123'
+const isLogin = ref(true)
+// 登陆表单
+const loginFormRef = ref()
+const loginForm = reactive({
+  username: '',
+  password: ''
 })
 
 const onLogin = async (formEl) => {
   loading.value = true
-
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       // useUserStoreHook()
-      //   .loginByUsername({ username: ruleForm.username, password: "admin123" })
+      //   .loginByUsername({ username: loginForm.username, password: "admin123" })
       //   .then(res => {
       //     if (res.success) {
       //       // 获取后端路由
@@ -72,21 +70,68 @@ const onLogin = async (formEl) => {
     }
   })
 }
+// 注册
+const registerFormRef = ref()
+const registerForm = reactive({
+  username: '',
+  password: '',
+  nickName: '',
+  mobile: '',
+  email: '',
+  gender: '',
+  age: 0,
+  birthday: ''
+})
+const ageOp = Array.from({ length: 100 }).map((_, idx) => ({
+  value: `${idx + 1}`,
+  label: `${idx + 1}`
+}))
 
-/** 使用公共函数，避免`removeEventListener`失效 */
-function onkeypress(code) {
-  if (code === 'Enter') {
-    onLogin(ruleFormRef.value)
-  }
+const register = async (formEl) => {
+  loading.value = true
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      const params = {
+        ...registerForm,
+        birthday: formatDate(registerForm.birthday),
+        gender:
+          registerForm.gender == '男' ? 1 : registerForm.gender == '女' ? 2 : 3
+      }
+      console.log(params, 'valid regsiter')
+      ElMessage({ message: '注册成功', type: 'success' })
+      // isLogin.value = true
+      loading.value = false
+    } else {
+      loading.value = false
+      return fields
+    }
+  })
 }
 
-onMounted(() => {
-  window.document.addEventListener('keypress', onkeypress)
-})
+const formatDate = (date, format = 'YYYY年MM月DD日') => {
+  var year = date.getFullYear()
+  var month = ('0' + (date.getMonth() + 1)).slice(-2) // 月份从0开始，所以要加1，并且前面补0
+  var day = ('0' + date.getDate()).slice(-2)
 
-onBeforeUnmount(() => {
-  window.document.removeEventListener('keypress', onkeypress)
-})
+  return format.replace(/YYYY|MM|M|DD|D/g, function (match) {
+    switch (match) {
+      case 'YYYY':
+        return year
+      case 'MM':
+        return month
+      case 'M':
+        return month.toString().charAt(0) // 如果只需要月份数字的个位数
+      case 'DD':
+        return day
+      case 'D':
+        return day.toString().charAt(0) // 如果只需要日期数字的个位数
+
+      default:
+        return match
+    }
+  })
+}
 </script>
 
 <template>
@@ -108,11 +153,15 @@ onBeforeUnmount(() => {
       </div>
       <div class="login-box" z-99 relative>
         <div class="login-form">
-          <img src="@/assets/logo.png" w-15 h-15 mb-3 />
-          <p font-size-7 color="#3a84ee">欢迎登陆</p>
+          <img src="@/assets/logo.png" w-15 h-15 mb-1 />
+          <p font-size-6 font-500 color="#3a84ee">
+            {{ isLogin ? '欢迎登陆' : '欢迎注册' }}
+          </p>
+          <!-- 登陆表单 -->
           <el-form
-            ref="ruleFormRef"
-            :model="ruleForm"
+            v-if="isLogin"
+            ref="loginFormRef"
+            :model="loginForm"
             :rules="loginRules"
             size="large"
           >
@@ -129,7 +178,7 @@ onBeforeUnmount(() => {
               >
                 <el-input
                   clearable
-                  v-model="ruleForm.username"
+                  v-model="loginForm.username"
                   placeholder="账号"
                   prefix-icon="User"
                 />
@@ -141,7 +190,7 @@ onBeforeUnmount(() => {
                 <el-input
                   clearable
                   show-password
-                  v-model="ruleForm.password"
+                  v-model="loginForm.password"
                   placeholder="密码"
                   prefix-icon="Lock"
                 />
@@ -154,7 +203,7 @@ onBeforeUnmount(() => {
                 size="default"
                 type="primary"
                 :loading="loading"
-                @click="onLogin(ruleFormRef)"
+                @click="onLogin(loginFormRef)"
               >
                 登录
               </el-button>
@@ -163,10 +212,121 @@ onBeforeUnmount(() => {
                 size="default"
                 type="primary"
                 plain
-                :loading="loading"
-                @click="onLogin(ruleFormRef)"
+                @click="isLogin = false"
               >
                 注册
+              </el-button>
+            </Motion>
+          </el-form>
+          <!-- 注册表单 -->
+          <el-form
+            v-if="!isLogin"
+            ref="registerFormRef"
+            :model="registerForm"
+            :rules="registerRules"
+            size="large"
+          >
+            <Motion :delay="100">
+              <el-form-item prop="username" label="账号">
+                <el-input
+                  clearable
+                  v-model="registerForm.username"
+                  placeholder="账号"
+                  prefix-icon="User"
+                />
+              </el-form-item>
+            </Motion>
+
+            <Motion :delay="150">
+              <el-form-item prop="password" label="密码">
+                <el-input
+                  clearable
+                  show-password
+                  v-model="registerForm.password"
+                  placeholder="密码"
+                  prefix-icon="Lock"
+                />
+              </el-form-item>
+            </Motion>
+
+            <Motion :delay="150">
+              <el-form-item prop="nickName" label="昵称">
+                <el-input
+                  clearable
+                  v-model="registerForm.nickName"
+                  maxlength="10"
+                  placeholder="昵称"
+                  prefix-icon="Ship"
+                />
+              </el-form-item>
+            </Motion>
+            <Motion :delay="150">
+              <el-form-item prop="mobile" label="电话">
+                <el-input
+                  clearable
+                  v-model.number="registerForm.mobile"
+                  placeholder="电话号码"
+                  prefix-icon="Phone"
+                />
+              </el-form-item>
+            </Motion>
+            <Motion :delay="150">
+              <el-form-item prop="email" label="邮箱">
+                <el-input
+                  clearable
+                  v-model="registerForm.email"
+                  placeholder="邮箱"
+                  prefix-icon="Message"
+                />
+              </el-form-item>
+            </Motion>
+
+            <el-form-item prop="gender" label="性别">
+              <el-radio-group v-model="registerForm.gender">
+                <el-radio label="男" />
+                <el-radio label="女" />
+                <el-radio label="未知" />
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item prop="age" label="年龄">
+              <el-select-v2
+                v-model="registerForm.age"
+                placeholder="年龄"
+                :options="ageOp"
+              />
+            </el-form-item>
+
+            <Motion :delay="150">
+              <el-form-item prop="birthday" label="生日">
+                <el-date-picker
+                  v-model="registerForm.birthday"
+                  type="date"
+                  format="YYYY-MM-DD"
+                  placeholder="选择生日日期"
+                  clearable
+                />
+              </el-form-item>
+            </Motion>
+
+            <Motion :delay="250">
+              <el-button
+                class="w-full mt-4"
+                size="default"
+                type="primary"
+                :loading="loading"
+                @click="register(registerFormRef)"
+              >
+                注册
+              </el-button>
+              <el-button
+                class="w-full mt-4"
+                size="default"
+                type="primary"
+                plain
+                @click="isLogin = true"
+              >
+                返回登陆
               </el-button>
             </Motion>
           </el-form>
