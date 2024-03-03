@@ -24,7 +24,7 @@ defineProps({
         <div class="flex-row sidebar-logo-link">
           <template>
             <img class="nav-logo" src="@/assets/avator.png" />
-            <span class="title">旅游信息管理网</span>
+            <span class="title">智慧旅游信息管理网</span>
           </template>
         </div>
       </div>

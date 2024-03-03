@@ -108,8 +108,8 @@ onBeforeUnmount(() => {
       </div>
       <div class="login-box" z-99 relative>
         <div class="login-form">
-          <img src="@/assets/logo.png" w-15 h-15 mb-5 />
-
+          <img src="@/assets/logo.png" w-15 h-15 mb-3 />
+          <p font-size-7 color="#3a84ee">欢迎登陆</p>
           <el-form
             ref="ruleFormRef"
             :model="ruleForm"
@@ -158,6 +158,16 @@ onBeforeUnmount(() => {
               >
                 登录
               </el-button>
+              <el-button
+                class="w-full mt-4"
+                size="default"
+                type="primary"
+                plain
+                :loading="loading"
+                @click="onLogin(ruleFormRef)"
+              >
+                注册
+              </el-button>
             </Motion>
           </el-form>
         </div>
@@ -169,6 +179,9 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 :deep(.el-input-group__append, .el-input-group__prepend) {
   padding: 0;
+}
+:deep(.el-button + .el-button) {
+  margin-left: 0;
 }
 .wave {
   position: fixed;
