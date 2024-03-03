@@ -5,17 +5,7 @@ import { menuStore } from '@/store/menu.js'
 const route = [...routes, ...roleRoutes]
 const router = createRouter({
   history: createWebHashHistory(),
-  routes,
-
-  scrollBehavior(to, from, savedPosition) {
-    if (to.hash) {
-      return {
-        selector: to.hash
-      }
-    } else {
-      return { x: 0, y: 0 }
-    }
-  }
+  routes
 })
 
 router.beforeEach((to, from, next) => {

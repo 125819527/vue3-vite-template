@@ -7,20 +7,24 @@
       </p>
 
       <div class="price" w-full p-2 mb-3>
-        <div class="-flex-row-flex-start-center">
-          <p font-size-6 color="#ee7f31" font-600 mr-5>
-            <span font-size-5>￥</span>
-            300
-            <span font-size-4 color="#b2b2b2" font-400>/人起</span>
-          </p>
-          <p font-size-6 color="#3a84ee" mr-3 font-600>
-            4.9
-            <span font-size-4 font-400>分</span>
-          </p>
+        <div class="-flex-row-space-between-center">
+          <div class="-flex-row-flex-start-center">
+            <p font-size-6 color="#ee7f31" font-600 mr-5>
+              <span font-size-5>￥</span>
+              300
+              <span font-size-4 color="#b2b2b2" font-400>/人起</span>
+            </p>
+            <p font-size-6 color="#3a84ee" mr-3 font-600>
+              4.9
+              <span font-size-4 font-400>分</span>
+            </p>
 
-          <p font-size-4 color="#3a84ee" mr-3 class="score">1231313评分</p>
+            <p font-size-4 color="#3a84ee" mr-3 class="score">1231313评分</p>
+          </div>
 
-          <p font-size-4 color="#666666" mr-3>13413413人出游</p>
+          <el-button type="primary" @click="orderVisible = true">
+            预定
+          </el-button>
         </div>
         <div class="-flex-row-flex-start-center">
           <el-tag plain type="warning">限时促销</el-tag>
@@ -163,8 +167,28 @@
       </el-carousel>
     </div>
   </el-dialog>
+
+  <el-dialog v-model="orderVisible" title="提交预定" width="500">
+    <el-form :model="form" :rules="rules" ref="formRef">
+      <el-form-item label="预定姓名" prop="name">
+        <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="联系方式" prop="tel">
+        <el-input v-model.number="form.tel" autocomplete="off" type="text" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="orderConfirm(formRef)">
+          确认
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 <script setup>
+const orderVisible = ref(false)
 const dialogVisible = ref(false)
 const openMore = () => {
   console.log('openMore')
@@ -183,6 +207,38 @@ onMounted(() => {
 
   console.log(endDdate.value, new Date())
 })
+
+const form = reactive({
+  name: '',
+  tel: ''
+})
+const formRef = ref()
+const rules = reactive({
+  name: [
+    { required: true, message: '请输入姓名', trigger: 'blur' },
+    { min: 1, max: 10, message: '请输入1-10字符', trigger: 'blur' }
+  ],
+  tel: [
+    { required: true, message: '请输入联系方式' },
+    { type: 'number', message: '请输入正确联系方式' }
+  ]
+})
+
+const orderConfirm = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      ElMessage({
+        message: '预定成功',
+        type: 'success'
+      })
+      orderVisible.value = false
+    } else {
+      orderVisible.value = false
+      console.log('error submit!', fields)
+    }
+  })
+}
 </script>
 <style lang="scss" scoped>
 :deep {
