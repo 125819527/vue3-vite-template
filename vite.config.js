@@ -39,11 +39,13 @@ export default defineConfig({
   },
   // 本地代理调试
   server: {
-    host: '0.0.0.0',
+    host: '0.0.0.0' /* 设置为0.0.0.0则所有的地址均能访问 */,
+    port: 3000 /* 设置端口 */,
     proxy: {
       '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true
+        target: 'http://101.132.251.60:8899', // 后台服务器地址
+        changeOrigin: true /* 允许跨域 */,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

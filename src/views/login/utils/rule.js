@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 
 /** 密码正则（密码格式应为8-18位数字、字母、符号的任意两种组合） */
-export const REGEXP_PWD = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z\d]{8,18}$/
+export const REGEXP_PWD = /^[A-Za-z0-9]{6,10}$/
 
 /** 登录校验 */
 const loginRules = reactive({
@@ -18,7 +18,7 @@ const loginRules = reactive({
         if (value === '') {
           callback(new Error('请输入密码'))
         } else if (!REGEXP_PWD.test(value)) {
-          callback(new Error('密码格式应为8-18位数字、字母任意组合'))
+          callback(new Error('密码格式应为6-10位数字、字母任意组合'))
         } else {
           callback()
         }
@@ -42,7 +42,7 @@ const registerRules = reactive({
         if (value === '') {
           callback(new Error('请输入密码'))
         } else if (!REGEXP_PWD.test(value)) {
-          callback(new Error('密码格式应为8-18位数字、字母任意组合'))
+          callback(new Error('密码格式应为6-10位数字、字母任意组合'))
         } else {
           callback()
         }

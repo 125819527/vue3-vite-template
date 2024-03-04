@@ -1,5 +1,5 @@
-import { get, post } from '@/utils/request'
+import { get, post } from '@/utils/methods'
 
 export const loginApi = (params) => {
-  return post('', params)
+  return post('/auth/pwdLogin', params)
 }

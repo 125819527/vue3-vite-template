@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ElLoading } from 'element-plus'
 import router from '../router'
- 
+
 const request = axios.create({
   baseURL: '/api',
   withCredentials: true,
@@ -46,7 +46,7 @@ request.interceptors.response.use(
       // 调到登录页面
       router.push('/login')
     } else if (res.code !== '200') {
-      console.log('请求错误')
+      console.log('请求错误', res.message)
 
       return Promise.reject(error)
     }

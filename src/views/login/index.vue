@@ -7,6 +7,7 @@ import { formatDate } from './utils/day'
 import { ref, reactive } from 'vue'
 import { menuStore } from '@/store/menu'
 import { ElMessage } from 'element-plus'
+import { loginApi } from '@/api/app'
 
 const store = menuStore()
 const router = useRouter()
@@ -22,54 +23,63 @@ const loginForm = reactive({
 })
 
 const onLogin = async (formEl) => {
-  loading.value = true
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      // useUserStoreHook()
-      //   .loginByUsername({ username: loginForm.username, password: "admin123" })
-      //   .then(res => {
-      //     if (res.success) {
-      //       // 获取后端路由
-      //       initRouter().then(() => {
-      //         router.push(getTopMenu(true).path);
-      //         message("登录成功", { type: "success" });
-      //       });
-      //     }
-      //   });
-      // TODO 权限控制
+  try {
+    loading.value = true
+    if (!formEl) return
+    await formEl.validate((valid, fields) => {
+      if (valid) {
+        const data = loginApi({
+          account: 'admin',
+          password: '123456'
+        })
+        console.log(data)
+        // useUserStoreHook()
+        //   .loginByUsername({ username: loginForm.username, password: "admin123" })
+        //   .then(res => {
+        //     if (res.success) {
+        //       // 获取后端路由
+        //       initRouter().then(() => {
+        //         router.push(getTopMenu(true).path);
+        //         message("登录成功", { type: "success" });
+        //       });
+        //     }
+        //   });
+        // TODO 权限控制
 
-      store.addMenuList()
-      router.addRoute({
-        path: '/roles',
-        name: 'roles',
-        component: () => import('@/layout/index.vue'),
-        meta: {
-          title: '用户管理',
-          icon: 'User'
-        },
-        redirect: '/roles/index',
-        children: [
-          {
-            path: '/roles/index',
-            name: 'roles',
-            component: () => import('@/views/roles/index.vue'),
-            meta: {
-              title: '用户管理',
-              icon: 'Setting '
+        store.addMenuList()
+        router.addRoute({
+          path: '/roles',
+          name: 'roles',
+          component: () => import('@/layout/index.vue'),
+          meta: {
+            title: '用户管理',
+            icon: 'User'
+          },
+          redirect: '/roles/index',
+          children: [
+            {
+              path: '/roles/index',
+              name: 'roles',
+              component: () => import('@/views/roles/index.vue'),
+              meta: {
+                title: '用户管理',
+                icon: 'Setting '
+              }
             }
-          }
-        ]
-      })
+          ]
+        })
 
-      // 存入菜单到本地
-      localStorage.setItem('menu', JSON.stringify(store.getMenuList))
-      router.push('/home/index')
-    } else {
-      loading.value = false
-      return fields
-    }
-  })
+        // 存入菜单到本地
+        localStorage.setItem('menu', JSON.stringify(store.getMenuList))
+        router.push('/home/index')
+      } else {
+        loading.value = false
+        return fields
+      }
+    })
+  } catch (error) {
+    loading.value = false
+  }
 }
 // 注册
 const registerFormRef = ref()
