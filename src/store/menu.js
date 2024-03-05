@@ -1,23 +1,21 @@
 import { defineStore } from 'pinia'
-import { routes, roleRoutes } from '@/router/routes'
-import { deepClone } from '@/utils/clone'
-import router from '@/router/index'
+
 export const menuStore = defineStore({
   id: 'menu', // id必填，且需要唯一
   state: () => {
     return {
-      menuList: deepClone(routes) || []
+      menuList: []
     }
   },
   getters: {
     getMenuList: (state) => state.menuList
   },
   actions: {
-    addMenuList(info) {
-      this.menuList = [...this.menuList, ...roleRoutes]
+    addMenuList(list) {
+      this.menuList = list
     },
     clearMenuList() {
-      this.menuList = deepClone(routes) || []
+      this.menuList = []
     }
   }
 })

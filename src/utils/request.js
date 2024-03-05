@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import router from '../router'
 
 const request = axios.create({
@@ -18,6 +18,8 @@ request.interceptors.request.use(
         text: '正在加载中'
       })
     }
+
+    config.headers.Authorization = localStorage.getItem('token')
     return config
   },
   (error) => {
@@ -34,18 +36,13 @@ request.interceptors.response.use(
     if (loadingServe) {
       loadingServe.close()
     }
+
     const res = result.data
-    if (res.code === '-1001') {
-      // 登录超时
-      console.log('请求拦截')
-      // 清除sessionstorage
-      localStorage.clear()
+    if (res.code == 2001) {
+      console.log(res.message)
 
-      // 清楚本地vuex的用户信息和用户菜单
-
-      // 调到登录页面
-      router.push('/login')
-    } else if (res.code !== '200') {
+      return Promise.reject(res.message)
+    } else if (res.code !== 200) {
       console.log('请求错误', res.message)
 
       return Promise.reject(error)

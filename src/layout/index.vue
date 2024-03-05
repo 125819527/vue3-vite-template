@@ -18,19 +18,19 @@ import { onMounted } from 'vue'
 import SidebarMenu from '@/layout/components/SidebarMenu.vue'
 import { menuStore } from '@/store/menu'
 
-const store = menuStore()
+const menu = menuStore()
 const routerList = ref([])
 const op = ref(1)
 
 onMounted(async () => {
   window.addEventListener('scroll', handleScroll, true)
-  if (localStorage.getItem('menu')) {
-    routerList.value = JSON.parse(localStorage.getItem('menu'))
+  if (menu.getMenuList.length) {
+    routerList.value = menu.getMenuList
   } else {
-    routerList.value = store.getMenuList
-    // 存入菜单到本地
-    localStorage.setItem('menu', JSON.stringify(store.getMenuList))
+    menu.addMenuList(JSON.parse(localStorage.getItem('menu')))
   }
+
+  routerList.value = menu.getMenuList
 })
 
 const handleScroll = (e) => {

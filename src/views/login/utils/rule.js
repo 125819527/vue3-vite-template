@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 
-/** 密码正则（密码格式应为8-18位数字、字母、符号的任意两种组合） */
+/** 密码正则（密码格式应为8-10位数字、字母、符号的任意两种组合） */
 export const REGEXP_PWD = /^[A-Za-z0-9]{6,10}$/
 
 /** 登录校验 */
@@ -8,7 +8,7 @@ const loginRules = reactive({
   username: [
     {
       required: true,
-      message: '请输入账号',
+      message: '请输入账号/电话号码/邮箱',
       trigger: 'blur'
     }
   ],

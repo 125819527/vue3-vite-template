@@ -40,7 +40,7 @@ export default defineConfig({
   // 本地代理调试
   server: {
     host: '0.0.0.0' /* 设置为0.0.0.0则所有的地址均能访问 */,
-    port: 3000 /* 设置端口 */,
+    port: 5173 /* 设置端口 */,
     proxy: {
       '/api': {
         target: 'http://101.132.251.60:8899', // 后台服务器地址

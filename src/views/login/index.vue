@@ -1,15 +1,18 @@
 <script setup>
-import Motion from './utils/motion'
 import { useRouter } from 'vue-router'
 import { loginRules, registerRules } from '@/views/login/utils/rule'
 import { bg, illustration, traveling } from './utils/static'
 import { formatDate } from './utils/day'
 import { ref, reactive } from 'vue'
 import { menuStore } from '@/store/menu'
+import { userStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
-import { loginApi } from '@/api/app'
+import { loginApi, registerApi } from '@/api/app'
+import { manageRoutes, baseRoutes } from '@/config/resouce'
+import { jwtDecode } from 'jwt-decode'
 
-const store = menuStore()
+const menu = menuStore()
+const user = userStore()
 const router = useRouter()
 const loading = ref(false)
 const isDay = ref(true)
@@ -21,6 +24,48 @@ const loginForm = reactive({
   username: '',
   password: ''
 })
+const login = async () => {
+  try {
+    const { data } = await loginApi({
+      account: loginForm.username,
+      password: loginForm.password
+    })
+
+    if (data) {
+      localStorage.setItem('token', data.token)
+      const code = jwtDecode(data.token)
+      // TODO 权限控制
+      console.log(code)
+      let isManage = true
+      if (isManage) {
+        menu.addMenuList(manageRoutes)
+      } else {
+        menu.addMenuList(baseRoutes)
+      }
+      user.saveInfo(code)
+
+      // 存入菜单到本地
+      localStorage.setItem('user', JSON.stringify(code))
+      localStorage.setItem('menu', JSON.stringify(menu.getMenuList))
+
+      ElMessage({
+        message: '登陆成功',
+        type: 'success',
+        duration: 1000
+      })
+
+      router.push('/home/index')
+    }
+  } catch (error) {
+    loading.value = false
+
+    ElMessage({
+      message: error,
+      type: 'error',
+      duration: 1000
+    })
+  }
+}
 
 const onLogin = async (formEl) => {
   try {
@@ -28,50 +73,7 @@ const onLogin = async (formEl) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
       if (valid) {
-        const data = loginApi({
-          account: 'admin',
-          password: '123456'
-        })
-        console.log(data)
-        // useUserStoreHook()
-        //   .loginByUsername({ username: loginForm.username, password: "admin123" })
-        //   .then(res => {
-        //     if (res.success) {
-        //       // 获取后端路由
-        //       initRouter().then(() => {
-        //         router.push(getTopMenu(true).path);
-        //         message("登录成功", { type: "success" });
-        //       });
-        //     }
-        //   });
-        // TODO 权限控制
-
-        store.addMenuList()
-        router.addRoute({
-          path: '/roles',
-          name: 'roles',
-          component: () => import('@/layout/index.vue'),
-          meta: {
-            title: '用户管理',
-            icon: 'User'
-          },
-          redirect: '/roles/index',
-          children: [
-            {
-              path: '/roles/index',
-              name: 'roles',
-              component: () => import('@/views/roles/index.vue'),
-              meta: {
-                title: '用户管理',
-                icon: 'Setting '
-              }
-            }
-          ]
-        })
-
-        // 存入菜单到本地
-        localStorage.setItem('menu', JSON.stringify(store.getMenuList))
-        router.push('/home/index')
+        login()
       } else {
         loading.value = false
         return fields
@@ -89,7 +91,7 @@ const registerForm = reactive({
   nickName: '',
   mobile: '',
   email: '',
-  gender: '',
+  gender: '未知',
   age: 0,
   birthday: ''
 })
@@ -98,7 +100,7 @@ const ageOp = Array.from({ length: 100 }).map((_, idx) => ({
   label: `${idx + 1}`
 }))
 
-const register = async (formEl) => {
+const onRegister = async (formEl) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -110,14 +112,23 @@ const register = async (formEl) => {
           registerForm.gender == '男' ? 1 : registerForm.gender == '女' ? 2 : 3
       }
       console.log(params, 'valid regsiter')
-      ElMessage({ message: '注册成功', type: 'success' })
-      // isLogin.value = true
-      loading.value = false
+      register(params)
     } else {
       loading.value = false
       return fields
     }
   })
+}
+
+const register = async (params) => {
+  try {
+    await registerApi(params)
+    ElMessage({ message: '注册成功', type: 'success' })
+    isLogin.value = true
+    loading.value = false
+  } catch (error) {
+    console.log(error)
+  }
 }
 </script>
 
@@ -152,58 +163,43 @@ const register = async (formEl) => {
             :rules="loginRules"
             size="large"
           >
-            <Motion :delay="100">
-              <el-form-item
-                :rules="[
-                  {
-                    required: true,
-                    message: '请输入账号',
-                    trigger: 'blur'
-                  }
-                ]"
-                prop="username"
-              >
-                <el-input
-                  clearable
-                  v-model="loginForm.username"
-                  placeholder="账号"
-                  prefix-icon="User"
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="username">
+              <el-input
+                clearable
+                v-model="loginForm.username"
+                placeholder="账号/电话号码/邮箱"
+                prefix-icon="User"
+              />
+            </el-form-item>
 
-            <Motion :delay="150">
-              <el-form-item prop="password">
-                <el-input
-                  clearable
-                  show-password
-                  v-model="loginForm.password"
-                  placeholder="密码"
-                  prefix-icon="Lock"
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="password">
+              <el-input
+                clearable
+                show-password
+                v-model="loginForm.password"
+                placeholder="密码"
+                prefix-icon="Lock"
+              />
+            </el-form-item>
 
-            <Motion :delay="250">
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                :loading="loading"
-                @click="onLogin(loginFormRef)"
-              >
-                登录
-              </el-button>
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                plain
-                @click="isLogin = false"
-              >
-                注册
-              </el-button>
-            </Motion>
+            <el-button
+              class="w-full mt-4"
+              size="default"
+              type="primary"
+              :loading="loading"
+              @click="onLogin(loginFormRef)"
+            >
+              登录
+            </el-button>
+            <el-button
+              class="w-full mt-4"
+              size="default"
+              type="primary"
+              plain
+              @click="isLogin = false"
+            >
+              注册
+            </el-button>
           </el-form>
           <!-- 注册表单 -->
           <el-form
@@ -213,60 +209,52 @@ const register = async (formEl) => {
             :rules="registerRules"
             size="large"
           >
-            <Motion :delay="100">
-              <el-form-item prop="username" label="账号">
-                <el-input
-                  clearable
-                  v-model="registerForm.username"
-                  placeholder="账号"
-                  prefix-icon="User"
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="username" label="账号">
+              <el-input
+                clearable
+                v-model="registerForm.username"
+                placeholder="账号"
+                prefix-icon="User"
+              />
+            </el-form-item>
 
-            <Motion :delay="150">
-              <el-form-item prop="password" label="密码">
-                <el-input
-                  clearable
-                  show-password
-                  v-model="registerForm.password"
-                  placeholder="密码"
-                  prefix-icon="Lock"
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="password" label="密码">
+              <el-input
+                clearable
+                show-password
+                v-model="registerForm.password"
+                placeholder="密码"
+                prefix-icon="Lock"
+              />
+            </el-form-item>
 
-            <Motion :delay="150">
-              <el-form-item prop="nickName" label="昵称">
-                <el-input
-                  clearable
-                  v-model="registerForm.nickName"
-                  maxlength="10"
-                  placeholder="昵称"
-                  prefix-icon="Ship"
-                />
-              </el-form-item>
-            </Motion>
-            <Motion :delay="150">
-              <el-form-item prop="mobile" label="电话">
-                <el-input
-                  clearable
-                  v-model.number="registerForm.mobile"
-                  placeholder="电话号码"
-                  prefix-icon="Phone"
-                />
-              </el-form-item>
-            </Motion>
-            <Motion :delay="150">
-              <el-form-item prop="email" label="邮箱">
-                <el-input
-                  clearable
-                  v-model="registerForm.email"
-                  placeholder="邮箱"
-                  prefix-icon="Message"
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="nickName" label="昵称">
+              <el-input
+                clearable
+                v-model="registerForm.nickName"
+                maxlength="10"
+                placeholder="昵称"
+                prefix-icon="Ship"
+              />
+            </el-form-item>
+
+            <el-form-item prop="mobile" label="电话">
+              <el-input
+                clearable
+                v-model.number="registerForm.mobile"
+                placeholder="电话号码"
+                prefix-icon="Phone"
+              />
+            </el-form-item>
+
+            <el-form-item prop="email" label="邮箱">
+              <el-input
+                clearable
+                v-model="registerForm.email"
+                placeholder="邮箱"
+                prefix-icon="Message"
+              />
+            </el-form-item>
 
             <el-form-item prop="gender" label="性别">
               <el-radio-group v-model="registerForm.gender">
@@ -284,38 +272,34 @@ const register = async (formEl) => {
               />
             </el-form-item>
 
-            <Motion :delay="150">
-              <el-form-item prop="birthday" label="生日">
-                <el-date-picker
-                  v-model="registerForm.birthday"
-                  type="date"
-                  format="YYYY-MM-DD"
-                  placeholder="选择生日日期"
-                  clearable
-                />
-              </el-form-item>
-            </Motion>
+            <el-form-item prop="birthday" label="生日">
+              <el-date-picker
+                v-model="registerForm.birthday"
+                type="date"
+                format="YYYY-MM-DD"
+                placeholder="选择生日日期"
+                clearable
+              />
+            </el-form-item>
 
-            <Motion :delay="250">
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                :loading="loading"
-                @click="register(registerFormRef)"
-              >
-                注册
-              </el-button>
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                plain
-                @click="isLogin = true"
-              >
-                返回登陆
-              </el-button>
-            </Motion>
+            <el-button
+              class="w-full mt-4"
+              size="default"
+              type="primary"
+              :loading="loading"
+              @click="onRegister(registerFormRef)"
+            >
+              注册
+            </el-button>
+            <el-button
+              class="w-full mt-4"
+              size="default"
+              type="primary"
+              plain
+              @click="isLogin = true"
+            >
+              返回登陆
+            </el-button>
           </el-form>
         </div>
       </div>

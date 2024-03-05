@@ -1,9 +1,10 @@
 <script setup>
 import { ElMessage } from 'element-plus'
-import { ref, onMounted, defineProps } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { logoutApi } from '@/api/app'
 import { menuStore } from '@/store/menu'
+import { userStore } from '@/store/user'
 // 从菠萝中拿用户信息
 // const store = userStore()
 // const {
@@ -14,7 +15,9 @@ import { menuStore } from '@/store/menu'
 //   savePlatformApp,
 //   saveCustomized
 // } = store
+const user = userStore()
 const menu = menuStore()
+const { getInfo } = user
 const router = useRouter()
 onMounted(async () => {
   getUser()
@@ -25,39 +28,29 @@ const dialog = ref({
 })
 
 const visible = ref(false)
-const getUser = async () => {
-  // const { data } = await getUserInfoApi()
-  // if (!data) {
-  //   return
-  // }
-  // const { userinfo, tenant, tenantList, permissions, platformApp, customized } =
-  //   data
-  // // 处理权限
-  // handlePower(data)
-  // // 存储用户信息、角色、租户
-  // saveUser(userinfo)
-  // saveTenant(tenant)
-  // saveTenantList(tenantList)
-  // savePermissions(permissions)
-  // savePlatformApp(platformApp)
-  // saveCustomized(customized)
-  // let title = '旺工牌'
-  // if (customized && customized['app.APP_GP.name']) {
-  //   title = customized['app.APP_GP.name']
-  // }
-  // document.title = title
-}
+const getUser = async () => {}
 
 // 退出登录
 const logout = async () => {
-  ElMessage({
-    message: '退出成功',
-    type: 'success',
-    duration: 2000
-  })
-  menu.clearMenuList()
-  localStorage.clear()
-  router.push('/login')
+  try {
+    await logoutApi()
+    ElMessage({
+      message: '退出成功',
+      type: 'success',
+      duration: 1000
+    })
+    menu.clearMenuList()
+    user.clearInfo()
+    localStorage.clear()
+    router.push('/login')
+  } catch (error) {
+    ElMessage({
+      message: '退出失败，请重试',
+      type: 'error',
+      duration: 1000
+    })
+    console.log(error)
+  }
 }
 
 // 关闭弹窗
@@ -98,7 +91,7 @@ const openDialog = () => {
           </div>
           <div class="right">
             <div class="top flex-ac">
-              <div class="name">小米</div>
+              <div class="name">{{ getInfo.nickName }}</div>
             </div>
           </div>
         </div>
