@@ -8,12 +8,14 @@ const request = axios.create({
   timeout: 20000
 })
 let loadingServe
+let loadingCount = 0
 
 request.interceptors.request.use(
   (config) => {
     const hideLoading = config.hideLoading
     // 默认开启loading
     if (!hideLoading) {
+      loadingCount++
       loadingServe = ElLoading.service({
         text: '正在加载中'
       })
@@ -33,7 +35,8 @@ request.interceptors.request.use(
 ) /*  */
 request.interceptors.response.use(
   (result) => {
-    if (loadingServe) {
+    loadingCount--
+    if (loadingServe && loadingCount <= 0) {
       loadingServe.close()
     }
 

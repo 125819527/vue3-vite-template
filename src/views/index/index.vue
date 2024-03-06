@@ -16,14 +16,75 @@
         </template>
       </el-input>
     </div>
-    <div class="swiper" w-full>
-      <el-carousel :interval="3000" type="card" height="300px">
-        <el-carousel-item v-for="item in 6" :key="item">
-          <h3 text="2xl" justify="center">{{ item }}</h3>
+    <div class="swiper" w-full v-if="imgs.length">
+      <el-carousel
+        :interval="3000"
+        height="400px"
+        indicator-position="outside"
+        arrow="always"
+      >
+        <el-carousel-item v-for="item in imgs" :key="item.Id">
+          <img :src="item.imgUrl" alt="img" w-full h-full />
         </el-carousel-item>
       </el-carousel>
     </div>
+    <!-- 搜索列表 -->
+    <div class="list" w-full mb-10 mt-30 relative v-if="searchVal">
+      <div absolute class="list-logo" flex>
+        <img
+          src="@/assets/index/travel2.png"
+          alt="travel"
+          width="60"
+          height="50"
+        />
+        <p font-size-5 font-500 ml-2>
+          搜索相关({{ Number(searchListTotal) ? searchListTotal : '0' }})
+        </p>
+      </div>
+      <el-tabs v-model="searchName" class="list-tabs">
+        <el-tab-pane label="搜索结果" name="1">
+          <template v-if="Number(searchListTotal)">
+            <el-card shadow="hover" v-for="item in searchList" :key="item.id">
+              <img :src="item.picUrl" class="image" w-full h-30 />
+              <div p-4 :style="{ overflow: 'scroll' }" h-70>
+                <span font-600 font-size-5>
+                  {{ item.title }}
+                </span>
+                <span class="-text-more-ellipsis">
+                  {{ item.summary }}
+                </span>
+                <p
+                  font-600
+                  w-full
+                  mt-1
+                  mb-2
+                  :style="{
+                    color: '#ed702d',
+                    fontSize: '24px'
+                  }"
+                >
+                  ¥ {{ item.price }}
+                  <el-tag type="danger">活动优惠</el-tag>
+                </p>
+                <div class="bottom">
+                  <el-button
+                    class="button"
+                    type="primary"
+                    plain
+                    @click="goDetail(item.id)"
+                  >
+                    查看详情
+                  </el-button>
+                </div>
+              </div>
+            </el-card>
+          </template>
 
+          <el-empty description="暂无搜索相关信息" v-else w-full />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <!-- 列表1 -->
     <div class="list" w-full mb-10 mt-30 relative>
       <div absolute class="list-logo" flex>
         <img
@@ -34,16 +95,25 @@
         />
         <p font-size-5 font-500 ml-2>欢乐周边游</p>
       </div>
-      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick">
-        <el-tab-pane label="User" name="first">
-          <el-card shadow="hover" v-for="index in 8" :key="index">
-            <img
-              src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
-              class="image"
-            />
-            <div style="padding: 14px">
+      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick()">
+        <el-tab-pane
+          :label="item.name"
+          :name="item.id"
+          v-for="item in areaList.list1"
+          :key="item.id"
+        >
+          <el-card
+            shadow="hover"
+            v-for="item in travelList.list1"
+            :key="item.id"
+          >
+            <img :src="item.picUrl" class="image" w-full h-30 />
+            <div p-4 :style="{ overflow: 'scroll' }" h-70>
+              <span font-600 font-size-5>
+                {{ item.title }}
+              </span>
               <span class="-text-more-ellipsis">
-                九寨沟+黄龙风景名胜区3日2晚跟团游·《国旅真纯玩》+携程5钻酒店+9:30出发C线（住希尔顿酒店J线+住五星豪生H线）+熊猫景区+赠藏家晚会+享五钻酒店美食+可选头等舱保姆车+免费包接+国旅官方直营+35000多人出游选择
+                {{ item.summary }}
               </span>
               <p
                 font-600
@@ -55,7 +125,7 @@
                   fontSize: '24px'
                 }"
               >
-                ¥ 1599
+                ¥ {{ item.price }}
                 <el-tag type="danger">活动优惠</el-tag>
               </p>
               <div class="bottom">
@@ -63,7 +133,7 @@
                   class="button"
                   type="primary"
                   plain
-                  @click="goDetail"
+                  @click="goDetail(item.id)"
                 >
                   查看详情
                 </el-button>
@@ -71,12 +141,9 @@
             </div>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="Config" name="second">Config</el-tab-pane>
-        <el-tab-pane label="Role" name="third">Role</el-tab-pane>
-        <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
       </el-tabs>
     </div>
-
+    <!-- 列表2 -->
     <div class="list" w-full mb-10 mt-20 relative>
       <div absolute class="list-logo" flex>
         <img
@@ -87,18 +154,29 @@
         />
         <p font-size-5 font-500 ml-2>推荐境外游</p>
       </div>
-      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick">
-        <el-tab-pane label="User" name="first">
-          <el-card shadow="hover" v-for="index in 10" :key="index">
-            <img
-              src="https://dimg04.c-ctrip.com/images/0305r12000cz71bco53EB_C_210_118_Q100.png"
-              class="image"
-              width="210"
-              height="118"
-            />
-            <div style="padding: 14px">
+      <el-tabs
+        v-model="activeName2"
+        class="list-tabs"
+        @tab-click="tabClick(item)"
+      >
+        <el-tab-pane
+          :label="item.name"
+          :name="item.id"
+          v-for="item in areaList.list2"
+          :key="item.id"
+        >
+          <el-card
+            shadow="hover"
+            v-for="item in travelList.list2"
+            :key="item.id"
+          >
+            <img :src="item.picUrl" class="image" w-full h-30 />
+            <div p-4 :style="{ overflow: 'scroll' }" h-70>
+              <span font-600 font-size-5>
+                {{ item.title }}
+              </span>
               <span class="-text-more-ellipsis">
-                九寨沟+黄龙风景名胜区3日2晚跟团游·《国旅真纯玩》+携程5钻酒店+9:30出发C线（住希尔顿酒店J线+住五星豪生H线）+熊猫景区+赠藏家晚会+享五钻酒店美食+可选头等舱保姆车+免费包接+国旅官方直营+35000多人出游选择
+                {{ item.summary }}
               </span>
               <p
                 font-600
@@ -110,7 +188,7 @@
                   fontSize: '24px'
                 }"
               >
-                ¥ 1599
+                ¥ {{ item.price }}
                 <el-tag type="danger">活动优惠</el-tag>
               </p>
               <div class="bottom">
@@ -118,7 +196,7 @@
                   class="button"
                   type="primary"
                   plain
-                  @click="goDetail"
+                  @click="goDetail(item.id)"
                 >
                   查看详情
                 </el-button>
@@ -126,11 +204,9 @@
             </div>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="Config" name="second">Config</el-tab-pane>
-        <el-tab-pane label="Role" name="third">Role</el-tab-pane>
-        <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 返回顶部 -->
     <el-backtop :bottom="100">
       <el-icon size="20"><CaretTop /></el-icon>
     </el-backtop>
@@ -138,23 +214,134 @@
 </template>
 <script setup>
 import router from '@/router'
+import * as api from '@/api/app'
+import { onMounted, reactive } from 'vue'
 
 const searchVal = ref('')
-const activeName = ref('first')
-const card = ref({
-  width: '100px'
+const activeName = ref('')
+const activeName2 = ref('')
+const searchName = ref('1')
+const pageParams = reactive({
+  pageNo: 1,
+  pageSize: 10
 })
-const search = () => {
-  console.log('search')
 
-  ElMessage({
-    message: '更新成功，列表已更新',
-    type: 'success'
-  })
+const imgs = reactive([])
+const searchList = ref([])
+const searchListTotal = ref(0)
+
+const areaList = reactive({
+  list1: [],
+  list2: []
+})
+
+const travelList = reactive({
+  list1: [],
+  list2: []
+})
+
+onMounted(async () => {
+  getAreaTabOne()
+  getAreaTabTwo()
+  getImgs()
+})
+
+/**
+ * 获取活动图片
+ */
+const getImgs = async () => {
+  try {
+    const { data } = await api.getImgApi()
+    if (data) {
+      imgs.push(...data)
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-const goDetail = () => {
-  router.push({ path: '/scenicDetail', query: { id: '11111' } })
+/**
+ * 获取列表1地区ltabs
+ */
+const getAreaTabOne = async () => {
+  try {
+    const { data } = await api.getAreaListApi(pageParams)
+    if (data.areaModelList) {
+      areaList.list1 = data.areaModelList
+
+      activeName.value = areaList.list1[0].id
+      getlist(1)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/**
+ * 获取列表1地区ltabs
+ */
+const getAreaTabTwo = async () => {
+  try {
+    const { data } = await api.getAreaListApi(pageParams)
+    if (data.areaModelList) {
+      areaList.list2 = data.areaModelList
+
+      activeName2.value = areaList.list2[0].id
+      getlist(2)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/**
+ * 根据地区获取列表
+ * params type 1 第一个列表 2 第二个列表
+ */
+const getlist = async (type = 1) => {
+  try {
+    let areaId = type == 1 ? activeName.value : activeName2.value
+    const { data } = await api.getScenicListApi({ areaId, ...pageParams })
+    if (data.travelSceneModelList) {
+      travelList.list1 = data.travelSceneModelList
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const tabClick = () => {
+  console.log(activeName.value)
+}
+const search = async () => {
+  try {
+    if (!searchVal.value) {
+      return ElMessage({
+        message: '搜索内容不能为空',
+        type: 'warning'
+      })
+    }
+    searchList.value = []
+    searchListTotal.value = 0
+    const { data } = await api.searchSceniclApi({
+      ...pageParams,
+      keyword: searchVal.value
+    })
+    if (data.travelSceneModelList) {
+      searchListTotal.value = data.total
+      searchList.value = data.travelSceneModelList
+    }
+    ElMessage({
+      message: '更新成功，列表已更新',
+      type: 'success'
+    })
+  } catch (error) {
+    searchList.value = []
+    searchListTotal.value = 0
+    console.log(error)
+  }
+}
+
+const goDetail = (travelId) => {
+  router.push({ path: '/scenicDetail', query: { travelId } })
 }
 </script>
 <style lang="scss" scoped>
