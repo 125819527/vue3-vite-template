@@ -17,10 +17,11 @@ import { userStore } from '@/store/user'
 // } = store
 const user = userStore()
 const menu = menuStore()
-const { getInfo } = user
+const userInfo = ref({})
 const router = useRouter()
 onMounted(async () => {
-  getUser()
+  userInfo.value = JSON.parse(localStorage.getItem('user'))
+  console.log(JSON.parse(localStorage.getItem('user')))
 })
 const dialog = ref({
   isShow: false,
@@ -91,7 +92,7 @@ const openDialog = () => {
           </div>
           <div class="right">
             <div class="top flex-ac">
-              <div class="name">{{ getInfo.nickName }}</div>
+              <div class="name">{{ userInfo.nickName }}</div>
             </div>
           </div>
         </div>
