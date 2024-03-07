@@ -74,7 +74,11 @@
       </div>
 
       <div class="more -flex-column-flex-start-flex-start">
-        <div mb-1 class="-flex-row-flex-start-center">
+        <div
+          mb-1
+          class="-flex-row-flex-start-center"
+          v-if="detail.characteristic"
+        >
           <p font-size-3 color="gray" w-17>产品特色</p>
           <el-tag
             type="primary"
@@ -83,7 +87,7 @@
             :key="item"
             mr-2
           >
-            {{ item }}
+            {{ item || '含导游服务' }}
           </el-tag>
         </div>
 
@@ -249,7 +253,6 @@ const rules = reactive({
 })
 
 const order = () => {
-  //TODO shopId 为当前酒店id
   form.shopId = detail.id
   form.travelNum = 0
   form.shopName = detail.title
@@ -274,7 +277,10 @@ const orderConfirm = async (formEl) => {
  */
 const handleOrder = async () => {
   try {
-    await api.addOrderApi(form)
+    await api.addOrderApi({
+      ...form,
+      singlePrice: detail.price * form.travelNum
+    })
     ElMessage({
       message: '预定成功',
       type: 'success'

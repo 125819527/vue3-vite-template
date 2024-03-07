@@ -16,6 +16,7 @@
             <StarFilled />
           </el-icon>
         </div>
+        <p mt-1 mb-2>地点：{{ item.localtion }}</p>
         <p
           font-600
           w-full
@@ -26,7 +27,7 @@
             fontSize: '16px'
           }"
         >
-          地点：{{ item.localtion }}
+          ¥{{ item.price }}晚起
         </p>
       </div>
     </el-card>
@@ -37,13 +38,23 @@ import * as api from '@/api/app'
 import router from '@/router'
 import { onMounted } from 'vue'
 const hotels = ref([])
+const page = reactive({
+  pageNo: 1,
+  pageSize: 10
+})
 
+defineProps({
+  detail: {
+    type: Object,
+    default: () => {}
+  }
+})
 onMounted(() => {
   getHotels()
 })
 const getHotels = async () => {
   try {
-    const { data } = await api.getHotelApi()
+    const { data } = await api.getHotelApi({ ...page, area: detail.area })
     if (data) {
       hotels.value = data
     }
@@ -94,8 +105,8 @@ const getHotels = async () => {
     console.log(error)
   }
 }
-const goHotel = async () => {
-  router.push({ path: '/hotelDetail', query: { id: '111' } })
+const goHotel = async (item) => {
+  router.push({ path: '/hotelDetail', query: { hotelId: item.id } })
 }
 </script>
 

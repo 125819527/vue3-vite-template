@@ -32,7 +32,7 @@
                   {{ item.tourist }}
                 </p>
                 <img
-                  :src="'data:image/png;base64,' + item.img"
+                  :src="item.img"
                   alt="img"
                   w-75
                   h-40

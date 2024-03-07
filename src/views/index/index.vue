@@ -37,7 +37,7 @@
           width="60"
           height="50"
         />
-        <p font-size-5 font-500 ml-2>
+        <p font-size-5 font-500 ml-1 >
           搜索相关({{ Number(searchListTotal) ? searchListTotal : '0' }})
         </p>
       </div>
@@ -323,6 +323,7 @@ const search = async () => {
     searchListTotal.value = 0
     const { data } = await api.searchSceniclApi({
       ...pageParams,
+      pageSize: 100,
       keyword: searchVal.value
     })
     if (data.travelSceneModelList) {

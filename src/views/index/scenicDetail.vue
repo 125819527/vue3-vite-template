@@ -47,6 +47,7 @@ const getDetail = async () => {
     const { data } = await api.getScenicDetailApi({ travelId: travelId.value })
     if (data) {
       info.value = data
+      info.value.costIncludes = data.costIncludes.slice(1)
     }
   } catch (error) {
     const data = {

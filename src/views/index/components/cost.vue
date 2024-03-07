@@ -9,7 +9,7 @@
         :closable="false"
       />
       <el-table
-        :data="detail.costIncludes"
+        :data="detail?.costIncludes"
         border
         style="width: 100%"
         :highlight-current-row="false"
@@ -34,14 +34,15 @@
         :highlight-current-row="false"
         :header-cell-style="{ backgroundColor: '#f6f8fa' }"
       >
-        <el-table-column prop="consumerType" label="住宿" width="240" />
-        <el-table-column prop="cost1" label="门票及地面项目" />
-        <el-table-column prop="cost2" label="补充" />
+        <el-table-column prop="consumerType" label="自理项" width="240" />
+        <el-table-column prop="cost1" label="自理内容" />
       </el-table>
     </div>
   </div>
 </template>
 <script setup>
+import { onMounted } from 'vue'
+
 defineProps({
   detail: {
     type: Object,

@@ -21,7 +21,7 @@ export const getUserListApi = (params) => {
 }
 
 export const delUserApi = (params) => {
-  return post('/user/delete', params)
+  return post(`/user/delete?userId=${params.userId}`)
 }
 
 export const updateUserApi = (params) => {
@@ -96,7 +96,9 @@ export const updateOrderApi = (params) => {
 export const getHotelApi = (params) => {
   return post('/hotel/getListByArea', params)
 }
-
+export const getHotelDetail = (params) => {
+  return get('/hotel/getHotelDetail', params)
+}
 // 活动
 export const getImgApi = (params) => {
   return get('/img/getList', params)
