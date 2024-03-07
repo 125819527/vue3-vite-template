@@ -44,5 +44,6 @@ div {
 .main {
   background-color: #f6f8fa;
   border-radius: 5px;
+  
 }
 </style>

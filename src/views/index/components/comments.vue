@@ -1,15 +1,8 @@
 <template>
-  <div class="other" w-full >
+  <div class="other" w-full>
     <div class="input" w-full p-3 mb-5>
       <h3>发表评论</h3>
-      <div class="-flex-row-flex-start-center" mb-1>
-        <span font-size-4 font-500>评分：</span>
-        <el-rate v-model="rate" :colors="colors" />
-        <p ml-2 font-size-6 font-500 color="#4e82e7">
-          {{ rate }}
-          <span font-size-4 ml-1>分</span>
-        </p>
-      </div>
+
       <el-input
         v-model="textarea"
         maxlength="500"
@@ -26,7 +19,7 @@
     </div>
     <el-divider content-position="center">全部评论</el-divider>
     <div class="input comments -flex-column-flex-start-center" w-full p-3 mb-5>
-      <div class="list" w-full v-for="index in 5" :key="index">
+      <div class="list" w-full v-for="item in comments" :key="item.id">
         <div flex>
           <div class="-flex-column-center-center" mr-10>
             <el-avatar
@@ -34,43 +27,84 @@
               :size="90"
               src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
             />
-            <p>小米</p>
+            <p>{{ item.name }}</p>
           </div>
-          <div class="right">
-            <div class="-flex-row-flex-start-center" mb-1>
-              <span font-size-4 font-500>评分：</span>
-              <el-rate v-model="rate" :colors="colors" disabled />
-              <p ml-2 font-size-6 font-500 color="#4e82e7">
-                {{ rate }}
-                <span font-size-4 ml-1>分</span>
-              </p>
+          <div class="right" w-full>
+            <div class="-flex-row-space-between-center" mb-1>
+              <div class="-flex-row-flex-start-center">
+                <span font-size-4 font-500>评分：</span>
+                <el-rate v-model="rate" :colors="colors" disabled />
+                <p ml-2 font-size-6 font-500 color="#4e82e7">
+                  5
+                  <span font-size-4 ml-1>分</span>
+                </p>
+              </div>
+
+              <p>发表时间：{{ item.createdTime }}</p>
             </div>
+
             <p w-full>
-              1，关于行程：出行前一晚，导游会提前告知上车集中点和车号，小车司机会准时来酒店接我！行程很紧凑，虽然要早起，但得知以前四天行程如今压缩到三天，对于我这种上班族，请假来旅游，能看到这样的美景，很值得！
-              2，就像行程所介绍的，没有强制性消费，不欺客，做到明明白白消费，九寨黄龙真的是精品线路！四川省的名片！
-              3，感谢赵导，性格直爽，特别照顾老人小孩，除了讲景点外，还会谈人生，特别大地震的故事，让我在以后的工作生活中更珍惜自己现在所拥有的美好生活！司机师傅驾驶技术超棒，九寨沟早上出发大雪，绑防滑链，一路的艰辛，预计21.00到成都，19.45就到了！
-              谢谢你们三天的陪伴，辛苦了！
+              {{ item.content }}
             </p>
           </div>
         </div>
 
         <el-divider></el-divider>
       </div>
-
-      <el-pagination layout="prev, pager, next" :total="1000" background />
     </div>
   </div>
 </template>
 <script setup>
+import { ElMessage } from 'element-plus'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { userStore } from '@/store/user'
+import * as api from '@/api/app'
+const router = useRouter()
+const user = userStore()
 const textarea = ref('')
-const rate = ref(0)
+const rate = ref(5)
 const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
-const onSubmit = () => {
-  console.log(textarea.value)
+const comments = ref([])
+const travelId = ref(router.currentRoute.value.query.travelId)
+
+onMounted(() => {
+  getComments()
+})
+
+/**
+ * 获取评论
+ */
+const getComments = async () => {
+  try {
+    const { data } = await api.getScenicCommentApi({
+      travelId: travelId.value
+    })
+    if (data) {
+      comments.value = data
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const onSubmit = async () => {
+  if (!textarea.value) {
+    return
+  }
+  console.log(user.getInfo, '=====')
+  await api.addScenicCommentApi({
+    travelId: travelId.value,
+    userId: user.getInfo.userId,
+    name: user.getInfo.nickName,
+    content: textarea.value
+  })
+  getComments()
+  textarea.value = ''
+  ElMessage.success('评论成功')
 }
 const reset = () => {
   textarea.value = ''
-  rate.value = 0
 }
 </script>
 

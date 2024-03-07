@@ -29,6 +29,7 @@ import { useRouter } from 'vue-router'
 import detail from './components/detail.vue'
 import detailTabs from './components/detailTabs.vue'
 import { onMounted } from 'vue'
+import * as api from '@/api/app'
 
 const router = useRouter()
 const travelId = ref()

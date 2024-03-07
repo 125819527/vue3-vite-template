@@ -5,16 +5,7 @@ import { useRouter } from 'vue-router'
 import { logoutApi } from '@/api/app'
 import { menuStore } from '@/store/menu'
 import { userStore } from '@/store/user'
-// 从菠萝中拿用户信息
-// const store = userStore()
-// const {
-//   saveUser,
-//   saveTenant,
-//   saveTenantList,
-//   savePermissions,
-//   savePlatformApp,
-//   saveCustomized
-// } = store
+ 
 const user = userStore()
 const menu = menuStore()
 const userInfo = ref({})

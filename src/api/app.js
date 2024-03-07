@@ -85,6 +85,7 @@ export const getOrderListApi = (params) => {
   return get('/order/getList', params)
 }
 export const addOrderApi = (params) => {
+  console.log(params)
   return post('/order/save', params)
 }
 export const updateOrderApi = (params) => {
