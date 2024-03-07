@@ -78,7 +78,7 @@ export const addScenicCommentApi = (params) => {
 
 // 订单
 export const delOrderApi = (params) => {
-  return post('/order/deleteById', params)
+  return post(`/order/deleteById?orderId=${params.orderId}`)
 }
 
 export const getOrderListApi = (params) => {

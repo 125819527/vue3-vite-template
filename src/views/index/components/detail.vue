@@ -22,9 +22,7 @@
             <p font-size-4 color="#3a84ee" mr-3 class="score">99+人评分</p>
           </div>
 
-          <el-button type="primary" @click="orderVisible = true">
-            预定
-          </el-button>
+          <el-button type="primary" @click="order">预定</el-button>
         </div>
         <div class="-flex-row-flex-start-center">
           <el-tag plain type="warning">限时促销</el-tag>
@@ -151,16 +149,45 @@
 
   <el-dialog v-model="orderVisible" title="提交预定" width="500">
     <el-form :model="form" :rules="rules" ref="formRef">
-      <el-form-item label="预定姓名" prop="name">
-        <el-input v-model="form.name" autocomplete="off" />
+      <el-form-item label="预定姓名" prop="username">
+        <el-input v-model="form.username" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="联系方式" prop="tel">
-        <el-input v-model.number="form.tel" autocomplete="off" type="text" />
+      <el-form-item label="联系方式" prop="mobile">
+        <el-input v-model.number="form.mobile" autocomplete="off" type="text" />
+      </el-form-item>
+      <el-form-item
+        label="订单人数"
+        prop="travelNum"
+        class="-flex-row-center-center"
+      >
+        <el-input
+          v-model.number="form.travelNum"
+          autocomplete="off"
+          type="number"
+        />
+      </el-form-item>
+      <el-form-item
+        label="景点名称"
+        prop="shopName"
+        class="-flex-row-center-center"
+      >
+        <p font-size-5 font-500>{{ form.shopName }}</p>
+      </el-form-item>
+      <el-form-item
+        label="景点地区"
+        prop="area"
+        class="-flex-row-center-center"
+      >
+        <p font-size-5 font-500>{{ form.area }}</p>
+      </el-form-item>
+
+      <el-form-item label="订单总价" class="-flex-row-center-center">
+        <p font-size-5 font-500>{{ form.travelNum * detail.price }}元</p>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click="orderVisible = false">取消</el-button>
         <el-button type="primary" @click="orderConfirm(formRef)">
           确认
         </el-button>
@@ -169,12 +196,16 @@
   </el-dialog>
 </template>
 <script setup>
+import { userStore } from '@/store/user'
+import { ElMessage } from 'element-plus'
+import * as api from '@/api/app'
 defineProps({
   detail: {
     type: Object,
     default: () => {}
   }
 })
+const user = userStore()
 const orderVisible = ref(false)
 const dialogVisible = ref(false)
 const openMore = () => {
@@ -196,8 +227,14 @@ onMounted(() => {
 })
 
 const form = reactive({
-  name: '',
-  tel: ''
+  userId: user.getInfo.userId,
+  username: '',
+  mobile: '',
+  shopId: 0,
+  type: 1, // 1景点 2酒店
+  travelNum: 0,
+  shopName: '',
+  area: ''
 })
 const formRef = ref()
 const rules = reactive({
@@ -211,20 +248,46 @@ const rules = reactive({
   ]
 })
 
+const order = () => {
+  //TODO shopId 为当前酒店id
+  form.shopId = detail.id
+  form.travelNum = 0
+  form.shopName = detail.title
+  form.area = idetail.area
+
+  orderVisible.value = true
+}
+
 const orderConfirm = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      ElMessage({
-        message: '预定成功',
-        type: 'success'
-      })
-      orderVisible.value = false
+      handleOrder()
     } else {
-      orderVisible.value = false
       console.log('error submit!', fields)
     }
   })
+}
+/**
+ * 提交订单
+ *
+ */
+const handleOrder = async () => {
+  try {
+    await api.addOrderApi(form)
+    ElMessage({
+      message: '预定成功',
+      type: 'success'
+    })
+    orderVisible.value = false
+  } catch (error) {
+    ElMessage({
+      message: '预定失败，请重试',
+      type: 'success'
+    })
+    orderVisible.value = false
+    console.log(error)
+  }
 }
 </script>
 <style lang="scss" scoped>

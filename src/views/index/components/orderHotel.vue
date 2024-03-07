@@ -50,7 +50,7 @@
                 300
                 <span font-size-4 color="#b2b2b2" font-400></span>
               </p>
-              <el-button type="primary" @click="order()">预定</el-button>
+              <el-button type="primary" @click="order">预定</el-button>
             </div>
           </div>
         </div>
@@ -169,7 +169,6 @@ const order = () => {
   form.shopName = info.value.headlineTitle
   form.area = info.value.localtion
 
-  console.log(form, '---')
   dialogVisible.value = true
 }
 onMounted(() => {
