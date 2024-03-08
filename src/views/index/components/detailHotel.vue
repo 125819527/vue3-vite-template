@@ -10,7 +10,7 @@
         <div class="-flex-row-flex-start-center">
           <p font-size-8 color="#3a84ee" font-600 mr-5>
             <span font-size-5>￥</span>
-            300
+            {{ info.price }}
             <span font-size-4 color="#b2b2b2" font-400>晚起</span>
           </p>
 
@@ -39,7 +39,7 @@
           特点：{{ info.characteristic }}
         </p>
 
-        <div class="-flex-row-flex-start-center">
+        <div class="-flex-row-flex-start-center" mb-1>
           <p font-size-3 color="#455873" mr-2>
             酒店特色
             <el-tag
@@ -56,7 +56,7 @@
           </p>
         </div>
 
-        <div class="-flex-row-flex-start-center">
+        <div class="-flex-row-flex-start-center" mb-2>
           <p font-size-3 color="#455873" mr-2>
             酒店周边
             <el-tag
@@ -64,7 +64,8 @@
               type="primary"
               mr-3
               ml-3
-              v-for="item in info.around"
+              mb-2
+              v-for="item in info.arounds"
               :key="item"
             >
               {{ item }}
@@ -81,12 +82,18 @@
           </el-col>
 
           <el-col :span="8" mr-2 h-full w-ful>
-            <img :src="info.summaryImg[0]" class="image" w-full h-full />
+            <img :src="info.summaryImgs[0]" class="image" w-full h-full />
           </el-col>
-          <el-col :span="7" class="-flex-column-center-center" h-full w-ful>
-            <img :src="info.summaryImg[1]" class="image" w-full pb-1 h-59 />
+          <el-col
+            :span="7"
+            class="-flex-column-center-center"
+            h-full
+            w-ful
+            overflow-hidden
+          >
+            <img :src="info.summaryImgs[1]" class="image" w-full pb-1 h-59 />
 
-            <img :src="info.summaryImg[2]" class="image" w-full h-59 />
+            <img :src="info.summaryImgs[2]" class="image" w-full h-59 />
             <div class="last-hover -flex-row-center-center" @click="openMore">
               <span color="#fff" font-size-3>查看更多图片</span>
             </div>
@@ -99,7 +106,10 @@
   <el-dialog v-model="dialogVisible" title="全部图片" width="60%">
     <div class="swiper" w-full p-5>
       <el-carousel :interval="3000" height="400px" arrow="always">
-        <el-carousel-item v-for="(item, index) in info.summaryImg" :key="index">
+        <el-carousel-item
+          v-for="(item, index) in info.summaryImgs"
+          :key="index"
+        >
           <img :src="item" class="image" w-full h-full />
         </el-carousel-item>
       </el-carousel>
@@ -108,13 +118,15 @@
 </template>
 <script setup>
 import * as api from '@/api/app'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const dialogVisible = ref(false)
+
 const openMore = () => {
-  console.log('openMore')
   dialogVisible.value = true
 }
 const info = ref({
-  summaryImg: [],
+  summaryImgs: [],
   rootTypeList: [],
   policyInfoList: []
 })
@@ -128,52 +140,15 @@ onMounted(() => {
   getDetail()
 })
 
-const getDetail = () => {
+const getDetail = async () => {
   try {
-    // const {data} = await api.
-    const data = {
-      headlineTitle: '上海新国际博览中心城际酒店',
-      starImg:
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-      area: '北京',
-      localtion: '上海浦东新区兰花路308号盈丰天地A座五层',
-      summaryImg: [
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-        'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg'
-      ],
-      summaryInfo:
-        '酒店从高品质、高效率的德式基调出发，打造出专为商务休闲旅客细心设想的待客之道。酒店讲究简约时尚的设计，舒适便捷的设施与精致贴心的服务，客房内部皆采用高智能设计，德龙热水壶，小度全智能控制，电子窗帘以及全床型舒达床垫给客人的舒适感。并拥有多元优质配 套设施，如灵动的功能性会议空间 "好会"，配备有独立的投影仪设备、音响设备、电视机等符合现代化会议及办公的各项设施，是您会议、培训、私人聚会的首选。',
-      characteristic:
-        '酒店从高品质、高效率的德式基调出发，打造出专为商务休闲旅客细心设想的待客之道。',
-      facilities: ['订房必读', '订房必读'],
-      around: ['订房必读', '订房必读', '订房必读'],
-      rootTypeList: [
-        {
-          leftInfo: '城际大床房1张1.5米双人床 | 30m² | 落地窗 | 禁烟',
-          img: 'https://dimg04.c-ctrip.com/images/0303r12000cwse3vr8363_D_350_170_Q70.jpg',
-          middleInfo: '城际大床房1张1.5米双人床 | 30m² | 落地窗 | 禁烟',
-          rightInfo: '城际大床房1张1.5米双人床 | 30m² | 落地窗 | 禁烟'
-        }
-      ],
-      policyInfoList: [
-        {
-          title: '订房必读',
-          info: '为贯彻落实《上海市生活垃圾管理条例》相关规定，推进生活垃圾源头减量，上海市文化和旅游局特制定《关于本市旅游住宿业不主动提供客房一次性日用品的实施意见》，2019年7月1日起，上海市旅游住宿业将不再主动提供牙刷、梳子、浴擦、剃须刀、指甲锉、鞋擦这些一次性日用品。若需要可咨询酒店。'
-        },
-        {
-          title: '订房必读',
-          info: '为贯彻落实《上海市生活垃圾管理条例》相关规定，推进生活垃圾源头减量，上海市文化和旅游局特制定《关于本市旅游住宿业不主动提供客房一次性日用品的实施意见》，2019年7月1日起，上海市旅游住宿业将不再主动提供牙刷、梳子、浴擦、剃须刀、指甲锉、鞋擦这些一次性日用品。若需要可咨询酒店。'
-        },
-        {
-          title: '订房必读',
-          info: '为贯彻落实《上海市生活垃圾管理条例》相关规定，推进生活垃圾源头减量，上海市文化和旅游局特制定《关于本市旅游住宿业不主动提供客房一次性日用品的实施意见》，2019年7月1日起，上海市旅游住宿业将不再主动提供牙刷、梳子、浴擦、剃须刀、指甲锉、鞋擦这些一次性日用品。若需要可咨询酒店。'
-        }
-      ]
+    const { data } = await api.getHotelDetail({
+      hotelId: router.currentRoute.value.query.hotelId
+    })
+    if (data) {
+      info.value = data
+      info.value.arounds = data.arounds.slice(0, 20)
     }
-    info.value = data
   } catch (error) {
     console.log(error)
   }
@@ -183,7 +158,7 @@ const getDetail = () => {
 :deep {
   .el-carousel__arrow {
     font-size: 30px;
-    color: #475669;
+    color: #ffffff;
     font-weight: 500;
     background-color: transparent;
   }

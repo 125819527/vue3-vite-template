@@ -166,6 +166,7 @@
       >
         <el-input
           v-model.number="form.travelNum"
+          min="1"
           autocomplete="off"
           type="number"
         />
@@ -201,9 +202,9 @@
 </template>
 <script setup>
 import { userStore } from '@/store/user'
-import { ElMessage } from 'element-plus'
+
 import * as api from '@/api/app'
-defineProps({
+const props = defineProps({
   detail: {
     type: Object,
     default: () => {}
@@ -226,8 +227,6 @@ onMounted(() => {
   currentDate.setMonth(currentDate.getMonth() + 2)
 
   endDdate.value = currentDate
-
-  console.log(endDdate.value, new Date())
 })
 
 const form = reactive({
@@ -236,27 +235,44 @@ const form = reactive({
   mobile: '',
   shopId: 0,
   type: 1, // 1景点 2酒店
-  travelNum: 0,
+  travelNum: 1,
   shopName: '',
   area: ''
 })
 const formRef = ref()
 const rules = reactive({
-  name: [
+  username: [
     { required: true, message: '请输入姓名', trigger: 'blur' },
     { min: 1, max: 10, message: '请输入1-10字符', trigger: 'blur' }
   ],
-  tel: [
-    { required: true, message: '请输入联系方式' },
-    { type: 'number', message: '请输入正确联系方式' }
-  ]
+  mobile: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入联系方式'))
+        } else if (!/^1[0-9]{10}$/.test(value)) {
+          callback(new Error('请输入中国合法的联系方式，以1开头的11位号码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    },
+    {
+      required: true,
+      message: '请输入联系方式',
+      trigger: 'blur'
+    }
+  ],
+  travelNum: [{ required: true, message: '请选择' }]
 })
 
 const order = () => {
-  form.shopId = detail.id
-  form.travelNum = 0
-  form.shopName = detail.title
-  form.area = idetail.area
+  console.log(props.detail)
+  form.shopId = props.detail.id
+
+  form.shopName = props.detail.title
+  form.area = props.detail.area
 
   orderVisible.value = true
 }
@@ -277,9 +293,10 @@ const orderConfirm = async (formEl) => {
  */
 const handleOrder = async () => {
   try {
+    //todo shopId
     await api.addOrderApi({
       ...form,
-      singlePrice: detail.price * form.travelNum
+      singlePrice: props.detail.price * form.travelNum
     })
     ElMessage({
       message: '预定成功',
@@ -289,7 +306,7 @@ const handleOrder = async () => {
   } catch (error) {
     ElMessage({
       message: '预定失败，请重试',
-      type: 'success'
+      type: 'error'
     })
     orderVisible.value = false
     console.log(error)
@@ -307,6 +324,9 @@ const handleOrder = async () => {
 }
 div {
   box-sizing: border-box;
+}
+p {
+  margin: 0;
 }
 .content {
   .price {

@@ -19,7 +19,7 @@
         <el-table-column prop="mobile" label="联系人电话" width="180" />
         <el-table-column prop="area" label="酒店地址" width="280" />
         <el-table-column prop="travelNum" label="订单天数" width="80" />
-
+        <el-table-column prop="singlePrice" label="订单总价" width="100" />
         <el-table-column prop="createdTime" label="订单创建时间" width="180" />
         <el-table-column prop="updatedTime" label="订单更新时间" width="180" />
         <el-table-column prop="address" label="操作" width="180" fixed="right">
@@ -79,7 +79,6 @@
 import * as api from '@/api/app'
 import { onMounted } from 'vue'
 import { userStore } from '@/store/user'
-import { ElMessage } from 'element-plus'
 
 const user = userStore()
 const dialogVisible = ref(false)
@@ -121,13 +120,28 @@ const getList = async () => {
 }
 
 const rules = reactive({
-  name: [
+  username: [
     { required: true, message: '请输入姓名', trigger: 'blur' },
     { min: 1, max: 10, message: '请输入1-10字符', trigger: 'blur' }
   ],
-  tel: [
-    { required: true, message: '请输入联系方式' },
-    { type: 'number', message: '请输入正确联系方式' }
+  mobile: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入联系方式'))
+        } else if (!/^1[0-9]{10}$/.test(value)) {
+          callback(new Error('请输入中国合法的联系方式，以1开头的11位号码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    },
+    {
+      required: true,
+      message: '请输入联系方式',
+      trigger: 'blur'
+    }
   ]
 })
 

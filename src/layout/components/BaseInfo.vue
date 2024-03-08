@@ -1,11 +1,10 @@
 <script setup>
-import { ElMessage } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { logoutApi } from '@/api/app'
 import { menuStore } from '@/store/menu'
 import { userStore } from '@/store/user'
- 
+
 const user = userStore()
 const menu = menuStore()
 const userInfo = ref({})

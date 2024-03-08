@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElLoading, ElMessage } from 'element-plus'
+import { ElLoading } from 'element-plus'
 import router from '../router'
 
 const request = axios.create({

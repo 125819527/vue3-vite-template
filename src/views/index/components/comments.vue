@@ -51,13 +51,13 @@
           </div>
 
           <el-divider></el-divider>
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="total"
-            @current-change="handleCurrentChange"
-          />
         </div>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="total"
+          @current-change="handleCurrentChange"
+        />
       </template>
 
       <el-empty description="暂无评论" v-else w-full />
@@ -65,7 +65,6 @@
   </div>
 </template>
 <script setup>
-import { ElMessage } from 'element-plus'
 import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { userStore } from '@/store/user'
@@ -103,7 +102,7 @@ const getComments = async () => {
     })
     if (data.commentVoList) {
       comments.value = data.commentVoList
-      total.value = Numer(data.total)
+      total.value = Number(data.total)
     }
   } catch (error) {
     console.log(error)
@@ -114,7 +113,7 @@ const onSubmit = async () => {
   if (!textarea.value) {
     return
   }
-  console.log(user.getInfo, '=====')
+
   await api.addScenicCommentApi({
     travelId: travelId.value,
     userId: user.getInfo.userId,

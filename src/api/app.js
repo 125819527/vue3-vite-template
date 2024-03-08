@@ -85,7 +85,6 @@ export const getOrderListApi = (params) => {
   return get('/order/getList', params)
 }
 export const addOrderApi = (params) => {
-  console.log(params)
   return post('/order/save', params)
 }
 export const updateOrderApi = (params) => {
@@ -94,7 +93,7 @@ export const updateOrderApi = (params) => {
 
 // 酒店
 export const getHotelApi = (params) => {
-  return post('/hotel/getListByArea', params)
+  return get('/hotel/getListByArea', params)
 }
 export const getHotelDetail = (params) => {
   return get('/hotel/getHotelDetail', params)

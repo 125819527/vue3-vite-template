@@ -70,7 +70,10 @@
         <h4>{{ item.title }}</h4>
         <ul>
           <li>
-            <p>{{ item.info }}</p>
+            <template v-if="item.info.startsWith('http')">
+              <img :src="item.info" alt="img" />
+            </template>
+            <p v-else>{{ item.info }}</p>
           </li>
         </ul>
       </div>
@@ -126,7 +129,6 @@
 </template>
 <script setup>
 import { userStore } from '@/store/user'
-import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import * as api from '@/api/app'
 const date = ref()
@@ -155,14 +157,32 @@ const rules = reactive({
     { min: 1, max: 10, message: '请输入1-10字符', trigger: 'blur' }
   ],
   mobile: [
-    { required: true, message: '请输入联系方式' },
-    { type: 'number', message: '请输入正确联系方式' }
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入联系方式'))
+        } else if (!/^1[0-9]{10}$/.test(value)) {
+          callback(new Error('请输入中国合法的联系方式，以1开头的11位号码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    },
+    {
+      required: true,
+      message: '请输入联系方式',
+      trigger: 'blur'
+    }
   ]
 })
 
 const order = () => {
   if (!date.value) {
-    return ElMessage.warning('请先选择日期')
+    return ElMessage({
+      message: '请先选择日期',
+      type: 'warning'
+    })
   }
   const travelNum = daysDifference()
 
@@ -222,7 +242,11 @@ const getDetail = async () => {
  */
 const handleOrder = async () => {
   try {
-    await api.addOrderApi({ ...form, singlePrice: form.travelNum * info.price })
+    await api.addOrderApi({
+      ...form,
+      singlePrice: form.travelNum * info.value.price,
+      shopId: Number(form.shopId)
+    })
     ElMessage({
       message: '预定成功',
       type: 'success'
@@ -231,7 +255,7 @@ const handleOrder = async () => {
   } catch (error) {
     ElMessage({
       message: '预定失败，请重试',
-      type: 'success'
+      type: 'error'
     })
     dialogVisible.value = false
     console.log(error)

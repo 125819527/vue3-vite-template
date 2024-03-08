@@ -6,7 +6,7 @@
       </el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     </el-breadcrumb>
-    <h2>当前所有用户列表</h2>
+    <h2>所有用户</h2>
     <div mt-10>
       <el-table
         :data="tableData"
@@ -41,16 +41,9 @@
           width="180"
         />
         <el-table-column prop="endLoginTime" label="最后登陆时间" width="180" />
-        <el-table-column prop="address" label="操作" width="220" fixed="right">
+        <el-table-column prop="address" label="操作" width="120" fixed="right">
           <template #default="scope">
-            <el-button
-              size="small"
-              type="primary"
-              @click="handleEdit(scope.row)"
-            >
-              <el-icon mr-1><Edit /></el-icon>
-              编辑权限
-            </el-button>
+         
             <el-button
               size="small"
               type="danger"
@@ -98,7 +91,6 @@
 import * as api from '@/api/app'
 import { onMounted } from 'vue'
 import { userStore } from '@/store/user'
-import { ElMessage } from 'element-plus'
 
 const user = userStore()
 const dialogVisible = ref(false)

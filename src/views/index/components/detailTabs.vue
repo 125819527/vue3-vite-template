@@ -28,7 +28,7 @@
     </el-tab-pane>
     <el-tab-pane label="热门点评" name="4"><comments></comments></el-tab-pane>
     <el-tab-pane label="附近酒店" name="5">
-      <hotels :detail="detail"></hotels>
+      <hotels :area="detail.area" v-if="detail"></hotels>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -44,7 +44,9 @@ const activeName = ref('0')
 defineProps({
   detail: {
     type: Object,
-    default: () => {}
+    default: () => {
+      area: ''
+    }
   }
 })
 </script>

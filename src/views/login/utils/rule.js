@@ -3,6 +3,8 @@ import { reactive } from 'vue'
 /** 密码正则（密码格式应为8-10位数字、字母、符号的任意两种组合） */
 export const REGEXP_PWD = /^[A-Za-z0-9]{6,10}$/
 
+export const REGEXP_MOBILE = /^1[0-9]{10}$/
+
 /** 登录校验 */
 const loginRules = reactive({
   username: [
@@ -76,8 +78,23 @@ const registerRules = reactive({
     }
   ],
   mobile: [
-    { required: true, message: '请输入联系方式' },
-    { type: 'number', message: '请输入正确联系方式' }
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入联系方式'))
+        } else if (!REGEXP_MOBILE.test(value)) {
+          callback(new Error('请输入中国合法的联系方式，以1开头的11位号码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    },
+    {
+      required: true,
+      message: '请输入联系方式',
+      trigger: 'blur'
+    }
   ],
   gender: [
     {
