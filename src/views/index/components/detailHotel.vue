@@ -35,12 +35,12 @@
         </p>
         <p font-size-4 color="#455873" font-400>酒店所在地：{{ info.area }}</p>
         <p font-size-4 color="#455873" font-400>地址：{{ info.localtion }}</p>
-        <p font-size-4 color="#455873" font-400>
+        <p font-size-4 color="#455873" font-400 v-if="info.characteristic">
           特点：{{ info.characteristic }}
         </p>
 
         <div class="-flex-row-flex-start-center" mb-1>
-          <p font-size-3 color="#455873" mr-2>
+          <p font-size-3 color="#455873" mr-2 v-if="info?.facilities">
             酒店特色
             <el-tag
               plain
@@ -57,7 +57,7 @@
         </div>
 
         <div class="-flex-row-flex-start-center" mb-2>
-          <p font-size-3 color="#455873" mr-2>
+          <p font-size-3 color="#455873" mr-2 v-if="info.arounds">
             酒店周边
             <el-tag
               plain

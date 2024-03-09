@@ -110,7 +110,7 @@
             {{ detail.supplier }}
           </div>
         </div>
-        <div mb-1 class="-flex-row-flex-start-flex-start" id="comments">
+        <div mb-1 class="-flex-row-flex-start-flex-start">
           <p font-size-3 color="gray" w-17>产品卖点</p>
 
           <p w-full font-size-3.5>

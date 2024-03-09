@@ -37,7 +37,7 @@
           width="60"
           height="50"
         />
-        <p font-size-5 font-500 ml-1 >
+        <p font-size-5 font-500 ml-1>
           搜索相关({{ Number(searchListTotal) ? searchListTotal : '0' }})
         </p>
       </div>
@@ -95,117 +95,67 @@
         />
         <p font-size-5 font-500 ml-2>欢乐周边游</p>
       </div>
-      <el-tabs v-model="activeName" class="list-tabs" @tab-click="tabClick()">
+      <el-tabs
+        v-model="activeName"
+        class="list-tabs"
+        @tab-change="tabClick(val)"
+      >
         <el-tab-pane
           :label="item.name"
           :name="item.id"
           v-for="item in areaList.list1"
           :key="item.id"
         >
-          <el-card
-            shadow="hover"
-            v-for="item in travelList.list1"
-            :key="item.id"
-          >
-            <img :src="item.picUrl" class="image" w-full h-30 />
-            <div p-4 :style="{ overflow: 'scroll' }" h-70>
-              <span font-600 font-size-5>
-                {{ item.title }}
-              </span>
-              <span class="-text-more-ellipsis">
-                {{ item.summary }}
-              </span>
-              <p
-                font-600
-                w-full
-                mt-1
-                mb-2
-                :style="{
-                  color: '#ed702d',
-                  fontSize: '24px'
-                }"
-              >
-                ¥ {{ item.price }}
-                <el-tag type="danger">活动优惠</el-tag>
-              </p>
-              <div class="bottom">
-                <el-button
-                  class="button"
-                  type="primary"
-                  plain
-                  @click="goDetail(item.id)"
+          <template v-if="travelList.list1.length">
+            <el-card
+              shadow="hover"
+              v-for="item in travelList.list1"
+              :key="item.id"
+            >
+              <img :src="item.picUrl" class="image" w-full h-30 />
+              <div p-4 :style="{ overflow: 'scroll' }" h-70>
+                <span font-600 font-size-5>
+                  {{ item.title }}
+                </span>
+                <span class="-text-more-ellipsis">
+                  {{ item.summary }}
+                </span>
+                <p
+                  font-600
+                  w-full
+                  mt-1
+                  mb-2
+                  :style="{
+                    color: '#ed702d',
+                    fontSize: '24px'
+                  }"
                 >
-                  查看详情
-                </el-button>
+                  ¥ {{ item.price }}
+                  <el-tag type="danger">活动优惠</el-tag>
+                </p>
+                <div class="bottom">
+                  <el-button
+                    class="button"
+                    type="primary"
+                    plain
+                    @click="goDetail(item.id)"
+                  >
+                    查看详情
+                  </el-button>
+                </div>
               </div>
-            </div>
-          </el-card>
+            </el-card>
+          </template>
+
+          <el-empty
+            description="暂无相关景点，请切换地区查看更多景点信息"
+            v-else
+            w-full
+          />
         </el-tab-pane>
       </el-tabs>
     </div>
-    <!-- 列表2 -->
-    <div class="list" w-full mb-10 mt-20 relative>
-      <div absolute class="list-logo" flex>
-        <img
-          src="@/assets/index/travel2.png"
-          alt="travel"
-          width="60"
-          height="50"
-        />
-        <p font-size-5 font-500 ml-2>推荐境外游</p>
-      </div>
-      <el-tabs
-        v-model="activeName2"
-        class="list-tabs"
-        @tab-click="tabClick(item)"
-      >
-        <el-tab-pane
-          :label="item.name"
-          :name="item.id"
-          v-for="item in areaList.list2"
-          :key="item.id"
-        >
-          <el-card
-            shadow="hover"
-            v-for="item in travelList.list2"
-            :key="item.id"
-          >
-            <img :src="item.picUrl" class="image" w-full h-30 />
-            <div p-4 :style="{ overflow: 'scroll' }" h-70>
-              <span font-600 font-size-5>
-                {{ item.title }}
-              </span>
-              <span class="-text-more-ellipsis">
-                {{ item.summary }}
-              </span>
-              <p
-                font-600
-                w-full
-                mt-1
-                mb-2
-                :style="{
-                  color: '#ed702d',
-                  fontSize: '24px'
-                }"
-              >
-                ¥ {{ item.price }}
-                <el-tag type="danger">活动优惠</el-tag>
-              </p>
-              <div class="bottom">
-                <el-button
-                  class="button"
-                  type="primary"
-                  plain
-                  @click="goDetail(item.id)"
-                >
-                  查看详情
-                </el-button>
-              </div>
-            </div>
-          </el-card>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+
     <!-- 返回顶部 -->
     <el-backtop :bottom="100">
       <el-icon size="20"><CaretTop /></el-icon>
@@ -219,7 +169,7 @@ import { onMounted, reactive } from 'vue'
 
 const searchVal = ref('')
 const activeName = ref('')
-const activeName2 = ref('')
+
 const searchName = ref('1')
 const pageParams = reactive({
   pageNo: 1,
@@ -231,18 +181,16 @@ const searchList = ref([])
 const searchListTotal = ref(0)
 
 const areaList = reactive({
-  list1: [],
-  list2: []
+  list1: []
 })
 
 const travelList = reactive({
-  list1: [],
-  list2: []
+  list1: []
 })
 
 onMounted(async () => {
   getAreaTabOne()
-  getAreaTabTwo()
+
   getImgs()
 })
 
@@ -270,36 +218,23 @@ const getAreaTabOne = async () => {
       areaList.list1 = data.areaModelList
 
       activeName.value = areaList.list1[0].id
-      getlist(1)
+      getlist()
     }
   } catch (error) {
     console.log(error)
   }
 }
-/**
- * 获取列表1地区ltabs
- */
-const getAreaTabTwo = async () => {
-  try {
-    const { data } = await api.getAreaListApi(pageParams)
-    if (data.areaModelList) {
-      areaList.list2 = data.areaModelList
 
-      activeName2.value = areaList.list2[0].id
-      getlist(2)
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
 /**
  * 根据地区获取列表
- * params type 1 第一个列表 2 第二个列表
  */
-const getlist = async (type = 1) => {
+const getlist = async () => {
   try {
-    let areaId = type == 1 ? activeName.value : activeName2.value
-    const { data } = await api.getScenicListApi({ areaId, ...pageParams })
+    const { data } = await api.getScenicListApi({
+      areaId: activeName.value,
+      ...pageParams,
+      pageSize: 100
+    })
     if (data.travelSceneModelList) {
       travelList.list1 = data.travelSceneModelList
     }
@@ -308,9 +243,12 @@ const getlist = async (type = 1) => {
   }
 }
 
-const tabClick = () => {
-  console.log(activeName.value)
+const tabClick = (item) => {
+  getlist()
 }
+/**
+ *  搜索
+ */
 const search = async () => {
   try {
     if (!searchVal.value) {
@@ -327,7 +265,7 @@ const search = async () => {
       keyword: searchVal.value
     })
     if (data.travelSceneModelList) {
-      searchListTotal.value = data.total
+      searchListTotal.value = Number(data.total)
       searchList.value = data.travelSceneModelList
     }
     ElMessage({
@@ -360,7 +298,10 @@ const goDetail = (travelId) => {
   .list .el-tabs__nav {
     left: 190px;
   }
-
+  .el-tabs__item {
+    font-size: 22px;
+    padding: 0 30px;
+  }
   // card
   .el-card__body {
     padding: 5px;

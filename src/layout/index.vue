@@ -3,7 +3,7 @@
     <sidebar-menu :router-list="routerList" :op="op" />
     <!-- main -->
     <div class="routemain" mt-24 h-full>
-      <router-view></router-view>
+      <router-view :key="cRoute"></router-view>
     </div>
     <footer>
       <p>版权所有</p>
@@ -15,13 +15,18 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import SidebarMenu from '@/layout/components/SidebarMenu.vue'
 import { menuStore } from '@/store/menu'
 
+const router = useRouter()
 const menu = menuStore()
 const routerList = ref([])
 const op = ref(1)
 
+let cRoute = computed(() => {
+  return router.currentRoute.value.fullPath
+})
 onMounted(async () => {
   window.addEventListener('scroll', handleScroll, true)
   if (menu.getMenuList.length) {
