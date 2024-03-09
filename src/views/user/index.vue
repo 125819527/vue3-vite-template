@@ -2,7 +2,7 @@
   <div class="main -flex-column-center-center" pl-10 pr-10 pb-20>
     <div class="form" w-250 p-10>
       <h2>个人信息</h2>
-      <div flex>
+      <div class="-flex-row-space-around-center">
         <el-form
           ref="formRef"
           :model="form"
@@ -18,18 +18,6 @@
               prefix-icon="User"
             />
             <p font-size-5 v-else>{{ form.username }}</p>
-          </el-form-item>
-
-          <el-form-item prop="password" label="密码">
-            <el-input
-              v-if="isEdit"
-              clearable
-              show-password
-              v-model="form.password"
-              placeholder="密码"
-              prefix-icon="Lock"
-            />
-            <p font-size-5 v-else>{{ form.password }}</p>
           </el-form-item>
 
           <el-form-item prop="nickName" label="昵称">
@@ -73,7 +61,7 @@
               <el-radio label="未知" />
             </el-radio-group>
             <p font-size-5 v-else>
-              {{ form.gender == 1 ? '男' : form.gender == 1 ? '女' : '未知' }}
+              {{ form.gender == 1 ? '男' : form.gender == 2 ? '女' : '未知' }}
             </p>
           </el-form-item>
 
@@ -97,6 +85,12 @@
               clearable
             />
             <p font-size-5 v-else>{{ form.birthday }}</p>
+          </el-form-item>
+          <el-form-item prop="name" label="用户权限" v-if="!isEdit">
+            <p font-size-5>{{ form.name }}</p>
+          </el-form-item>
+          <el-form-item prop="registerTime" label="账号注册时间" v-if="!isEdit">
+            <p font-size-5>{{ form.registerTime }}</p>
           </el-form-item>
 
           <el-button
@@ -122,14 +116,57 @@
             class="mt-4"
             size="default"
             type="primary"
-            @click="isEdit = true"
+            @click="handleEdit"
           >
             编辑
           </el-button>
+          <el-button
+            v-if="!isEdit"
+            class="mt-4"
+            size="default"
+            type="primary"
+            @click="dialogVisible = true"
+          >
+            修改密码
+          </el-button>
         </el-form>
-        <img :src="info" alt="info" width="700" v-if="!isEdit" />
+        <img :src="info" alt="info" width="500" v-if="!isEdit" />
       </div>
     </div>
+
+    <el-dialog v-model="dialogVisible" title="修改密码" width="500">
+      <el-form :model="pwdForm" :rules="pwdRules" ref="pwdFormRef">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="pwdForm.oldPassword" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input
+            clearable
+            show-password
+            placeholder="请输入新密码"
+            prefix-icon="Lock"
+            v-model="pwdForm.newPassword"
+          />
+        </el-form-item>
+        <el-form-item label="再次确认" prop="confirmNewPassword">
+          <el-input
+            clearable
+            show-password
+            placeholder="请再次输入新密码"
+            prefix-icon="Lock"
+            v-model="pwdForm.confirmNewPassword"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="pwdConfirm(pwdFormRef)">
+            确认
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
     <el-backtop :bottom="100">
       <el-icon size="20"><CaretTop /></el-icon>
     </el-backtop>
@@ -139,41 +176,180 @@
 import info from '@/assets/svg/info.svg'
 import { registerRules } from '@/views/login/utils/rule'
 import { formatDate } from '@/views/login/utils/day'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { userStore } from '@/store/user'
+import * as api from '@/api/app'
+import { ElMessage } from 'element-plus'
 const formRef = ref()
-
+const user = userStore()
 const isEdit = ref(false)
-const form = reactive({
-  username: '31r13r1351',
-  password: '113413affsf',
-  nickName: '1faeaera',
-  mobile: '14134134',
-  email: 'afafaef',
-  gender: '男',
-  age: 13,
-  birthday: '1431年13月13日'
+const form = ref({
+  age: 0,
+  avatarUrl: '',
+  birthday: '',
+  code: ' ',
+  createdTime: ' ',
+  deletedAt: 0,
+  email: ' ',
+  endLoginTime: null,
+  firstLoginTime: null,
+  gender: 0,
+  hasAdmin: 0,
+  id: '',
+  mobile: '',
+  name: ' ',
+  nickName: '',
+  realName: '',
+  registerTime: ' ',
+  updatedTime: ' ',
+  username: ' '
 })
+
+/** 密码正则（密码格式应为6-10位数字、字母、符号的任意两种组合） */
+const REGEXP_PWD = /^[A-Za-z0-9]{6,10}$/
+const pwdFormRef = ref()
+// 修改密码弹窗
+const dialogVisible = ref(false)
+const pwdForm = reactive({
+  oldPassword: '',
+  newPassword: '',
+  confirmNewPassword: ''
+})
+
+/** 修改密码校验 */
+const pwdRules = reactive({
+  oldPassword: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入旧密码'))
+        } else if (!REGEXP_PWD.test(value)) {
+          callback(new Error('密码格式应为6-10位数字、字母任意组合'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
+  newPassword: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入新密码'))
+        } else if (!REGEXP_PWD.test(value)) {
+          callback(new Error('密码格式应为6-10位数字、字母任意组合'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
+  confirmNewPassword: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入新密码'))
+        } else if (!REGEXP_PWD.test(value)) {
+          callback(new Error('密码格式应为6-10位数字、字母任意组合'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ]
+})
+
+const pwdConfirm = async () => {
+  try {
+    if (pwdForm.newPassword !== pwdForm.confirmNewPassword) {
+      return ElMessage({ type: 'error', message: '两次输入密码不一致' })
+    }
+    await api.updatePwdApi({
+      userId: user.getInfo.userId,
+      ...pwdForm
+    })
+    ElMessage({ type: 'success', message: '修改成功' })
+    dialogVisible.value = false
+  } catch (error) {
+    ElMessage({ type: 'error', message: '修改失败，请重试' })
+  }
+}
+
 const ageOp = Array.from({ length: 100 }).map((_, idx) => ({
   value: `${idx + 1}`,
   label: `${idx + 1}`
 }))
 
+onMounted(() => {
+  getInfo()
+})
+
+const handleEdit = () => {
+  form.value.gender =
+    form.value.gender == 1 ? '男' : form.value.gender == 2 ? '女' : '未知'
+  form.value.birthday = new Date(form.value.birthday)
+  isEdit.value = true
+}
+
+const getInfo = async () => {
+  try {
+    const { data } = await api.getUserListApi({
+      pageNo: 1,
+      pageSize: 10000
+    })
+    if (data.userModelList) {
+      let arr = data.userModelList.filter((item) => {
+        return item.deletedAt == 0
+      })
+      let userId = user.getInfo.userId
+      arr.filter((item) => {
+        if (Number(item.id) == userId) {
+          return item
+        }
+      })
+      form.value = arr[0]
+      console.log(form.value, '----')
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const edit = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      const params = {
-        ...form,
-        birthday: formatDate(form.birthday),
-        gender: form.gender == '男' ? 1 : form.gender == '女' ? 2 : 3
-      }
-      console.log(params, 'valid regsiter')
-      ElMessage({ message: '编辑成功', type: 'success' })
-      isEdit.value = false
+      editApi()
     } else {
       return fields
     }
   })
+}
+
+const editApi = async () => {
+  try {
+    const params = {
+      userId: user.getInfo.userId,
+      username: form.value.username,
+      nickName: form.value.nickName,
+      mobile: form.value.mobile,
+      email: form.value.email,
+      gender: form.value.gender == '男' ? 1 : form.value.gender == '女' ? 2 : 3,
+      age: form.value.age,
+      birthday: formatDate(new Date(form.value.birthday))
+    }
+
+    await api.updateUserApi(params)
+    ElMessage({ message: '编辑成功', type: 'success' })
+    form.value.birthday = formatDate(new Date(form.value.birthday))
+    isEdit.value = false
+  } catch (error) {
+    ElMessage({ message: '编辑失败，请重试', type: 'success' })
+    isEdit.value = false
+  }
 }
 const cancel = () => {
   isEdit.value = false

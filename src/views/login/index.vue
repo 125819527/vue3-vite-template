@@ -34,9 +34,9 @@ const login = async () => {
     if (data) {
       localStorage.setItem('token', data.token)
       const code = jwtDecode(data.token)
-      // TODO 权限控制
+
       console.log(code)
-      let isManage = true
+      let isManage = code.hasAdmin ? true : false
       if (isManage) {
         menu.addMenuList(manageRoutes)
       } else {

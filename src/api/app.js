@@ -28,6 +28,10 @@ export const updateUserApi = (params) => {
   return post('/user/updateUser', params)
 }
 
+export const updatePwdApi = (params) => {
+  return post('/auth/updatePwd', params)
+}
+
 // 更新用户角色
 export const updateUserRoleApi = (params) => {
   return post('/user/updateUserRole', params)

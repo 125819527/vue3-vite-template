@@ -43,7 +43,6 @@
         <el-table-column prop="endLoginTime" label="最后登陆时间" width="180" />
         <el-table-column prop="address" label="操作" width="120" fixed="right">
           <template #default="scope">
-         
             <el-button
               size="small"
               type="danger"
@@ -150,36 +149,29 @@ const delUser = async (id) => {
   }
 }
 
-/**
- * 编辑用户权限
- */
-const handleEdit = (item) => {
-  dialogVisible.value = true
-}
+// const editConfirm = async (formEl) => {
+//   if (!formEl) return
+//   await formEl.validate((valid, fields) => {
+//     if (valid) {
+//       editOrder()
+//     } else {
+//       console.log('error submit!', fields)
+//     }
+//   })
+// }
 
-const editConfirm = async (formEl) => {
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      editOrder()
-    } else {
-      console.log('error submit!', fields)
-    }
-  })
-}
-
-/**修改用户角色权限 */
-const editOrder = async () => {
-  try {
-    await api.updateUserRoleApi(form)
-    ElMessage.success('修改成功')
-    dialogVisible.value = false
-    getList()
-  } catch (error) {
-    ElMessage.error('修改失败，请重试')
-    console.log(error)
-  }
-}
+// /**修改用户角色权限 */
+// const editOrder = async () => {
+//   try {
+//     await api.updateUserRoleApi(form)
+//     ElMessage.success('修改成功')
+//     dialogVisible.value = false
+//     getList()
+//   } catch (error) {
+//     ElMessage.error('修改失败，请重试')
+//     console.log(error)
+//   }
+// }
 const handleSizeChange = (val) => {
   tableParams.pageSize = val
   getList()
